@@ -17,7 +17,7 @@ from python_utils import (
     check_var_valid_value,
     flatten_dict,
     import_vars,
-    load_shell_config,
+    load_yaml_config,
     print_info_msg,
 )
 
@@ -127,6 +127,6 @@ def parse_args(argv):
 
 if __name__ == "__main__":
     args = parse_args(sys.argv[1:])
-    cfg = load_shell_config(args.path_to_defns)
+    cfg = load_yaml_config(args.path_to_defns)
     cfg = flatten_dict(cfg)
     set_fv3nml_sfc_climo_filenames(cfg, args.debug)
