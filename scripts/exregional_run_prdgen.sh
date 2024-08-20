@@ -8,11 +8,25 @@
 #-----------------------------------------------------------------------
 #
 . $USHdir/source_util_funcs.sh
-for sect in user nco platform workflow nco global verification cpl_aqm_parm \
-  constants fixed_files grid_params \
-  task_run_post task_run_prdgen ; do
+sections=(
+  user
+  nco
+  platform
+  workflow
+  global
+  verification
+  cpl_aqm_parm
+  constants
+  fixed_files
+  grid_params
+  task_run_prdgen
+)
+for sect in ${sections[*]} ; do
   source_yaml ${GLOBAL_VAR_DEFNS_FP} ${sect}
 done
+
+POST_OUTPUT_DOMAIN_NAME=$(uw config realize --output-format yaml \
+  --key-path task_run_post.post_output_domain_name)
 #
 #-----------------------------------------------------------------------
 #
@@ -146,16 +160,6 @@ prslev=${COMOUT}/${NET}.${cycle}${dot_ensmem}.prslev.f${fhr}.${POST_OUTPUT_DOMAI
 natlev=${COMOUT}/${NET}.${cycle}${dot_ensmem}.natlev.f${fhr}.${POST_OUTPUT_DOMAIN_NAME}.grib2
 testbed=${COMOUT}/${NET}.${cycle}${dot_ensmem}.testbed.f${fhr}.${POST_OUTPUT_DOMAIN_NAME}.grib2
 ififip=${COMOUT}/${NET}.${cycle}${dot_ensmem}.ififip.f${fhr}.${POST_OUTPUT_DOMAIN_NAME}.grib2
-
-# extract the output fields for the testbed files
-touch ${testbed}
-if [[ ! -z ${TESTBED_FIELDS_FN} ]]; then
-  if [[ -f "${PARMdir}/upp/${TESTBED_FIELDS_FN}" ]]; then
-    wgrib2 ${prslev} | grep -F -f "${PARMdir}/upp/${TESTBED_FIELDS_FN}" | wgrib2 -i -grib ${testbed} ${prslev}
-  else
-    echo "${PARMdir}/upp/${TESTBED_FIELDS_FN} not found"
-  fi
-fi
 
 gridname=""
 if [ ${PREDEF_GRID_NAME} = "RRFS_CONUS_3km" ]; then

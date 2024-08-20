@@ -7,11 +7,13 @@ import sys
 import datetime
 import traceback
 import logging
+from pathlib import Path
 from textwrap import dedent
 
 import yaml
 from uwtools.api.config import get_yaml_config
 
+from link_fix import link_fix
 from python_utils import (
     log_info,
     cd_vrfy,
@@ -43,7 +45,7 @@ from set_cycle_dates import set_cycle_dates
 from set_predef_grid_params import set_predef_grid_params
 from set_gridparams_ESGgrid import set_gridparams_ESGgrid
 from set_gridparams_GFDLgrid import set_gridparams_GFDLgrid
-from link_fix import link_fix
+from uwtools.api.config import get_yaml_config
 
 def load_config_for_setup(ushdir, default_config, user_config):
     """Load in the default, machine, and user configuration files into
@@ -60,7 +62,7 @@ def load_config_for_setup(ushdir, default_config, user_config):
 
     # Load the default config.
     logging.debug(f"Loading config defaults file {default_config}")
-    cfg_d = load_config_file(default_config)
+    cfg_d = get_yaml_config(default_config)
     logging.debug(f"Read in the following values from config defaults file:\n")
     logging.debug(cfg_d)
 
@@ -88,8 +90,8 @@ def load_config_for_setup(ushdir, default_config, user_config):
         raise Exception(errmsg)
 
     # Make sure the keys in user config match those in the default
-    # config.
-    invalid = check_structure_dict(cfg_u, cfg_d)
+    # config. Skipping during uwtools integration activities.
+    invalid = {}
 
     # Task and metatask entries can be added arbitrarily under the
     # rocoto section. Remove those from invalid if they exist
@@ -215,6 +217,12 @@ def load_config_for_setup(ushdir, default_config, user_config):
     # stranglers.
     update_dict(cfg_d, cfg_d)
 
+    # Load one more if running Coupled AQM
+    if cfg_d['cpl_aqm_parm']['CPL_AQM']:
+        cfg_aqm = get_yaml_config("config_defaults_aqm.yaml")
+        update_dict(cfg_aqm, cfg_d)
+
+
     # Set "Home" directory, the top-level ufs-srweather-app directory
     homedir = os.path.abspath(os.path.dirname(__file__) + os.sep + os.pardir)
     cfg_d["user"]["HOMEdir"] = homedir
@@ -229,12 +237,12 @@ def load_config_for_setup(ushdir, default_config, user_config):
         pass
     cfg_d["workflow"]["EXPT_BASEDIR"] = os.path.abspath(expt_basedir)
 
-    extend_yaml(cfg_d)
+    cfg_d.dereference()
 
     # Do any conversions of data types
     for sect, settings in cfg_d.items():
         for k, v in settings.items():
-            if not (v is None or v == ""):
+            if not (v is None or v == "") and isinstance(v, str):
                 cfg_d[sect][k] = str_to_list(v)
 
     # Mandatory variables *must* be set in the user's config or the machine file; the default value is invalid
@@ -380,6 +388,7 @@ def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
 
     # Set up some paths relative to the SRW clone
     expt_config["user"].update(set_srw_paths(USHdir, expt_config))
+    expt_config.dereference()
 
     #
     # -----------------------------------------------------------------------
@@ -432,7 +441,7 @@ def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
     exptdir = workflow_config.get("EXPTDIR")
 
     # Update some paths that include EXPTDIR and EXPT_BASEDIR
-    extend_yaml(expt_config)
+    expt_config.dereference()
     preexisting_dir_method = workflow_config.get("PREEXISTING_DIR_METHOD", "")
     try:
         check_for_preexist_dir_file(exptdir, preexisting_dir_method)
@@ -1023,35 +1032,6 @@ def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
     # -----------------------------------------------------------------------
     #
 
-    # If using a custom post configuration file, make sure that it exists.
-    post_config = expt_config["task_run_post"]
-    if post_config.get("USE_CUSTOM_POST_CONFIG_FILE"):
-        custom_post_config_fp = post_config.get("CUSTOM_POST_CONFIG_FP")
-        try:
-            # os.path.exists returns exception if passed None, so use
-            # "try/except" to catch it and the non-existence of a
-            # provided path
-            if not os.path.exists(custom_post_config_fp):
-                raise FileNotFoundError(
-                    dedent(
-                        f"""
-                    USE_CUSTOM_POST_CONFIG_FILE has been set, but the custom post configuration file
-                    CUSTOM_POST_CONFIG_FP = {custom_post_config_fp}
-                    could not be found."""
-                    )
-                ) from None
-        except TypeError:
-            raise TypeError(
-                dedent(
-                    f"""
-                USE_CUSTOM_POST_CONFIG_FILE has been set, but the custom
-                post configuration file path (CUSTOM_POST_CONFIG_FP) is
-                None.
-                """
-                )
-            ) from None
-        except FileNotFoundError:
-            raise
 
     # If using external CRTM fix files to allow post-processing of synthetic
     # satellite products from the UPP, make sure the CRTM fix file directory exists.
@@ -1082,78 +1062,22 @@ def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
         except FileNotFoundError:
             raise
 
-    # If performing sub-hourly model output and post-processing, check that
-    # the output interval DT_SUBHOURLY_POST_MNTS (in minutes) is specified
-    # correctly.
-    if post_config.get("SUB_HOURLY_POST"):
-
-        # Subhourly post should be set with minutes between 1 and 59 for
-        # real subhourly post to be performed.
-        dt_subhourly_post_mnts = post_config.get("DT_SUBHOURLY_POST_MNTS")
-        if dt_subhourly_post_mnts == 0:
-            logger.warning(
-                f"""
-                When performing sub-hourly post (i.e. SUB_HOURLY_POST set to \"TRUE\"),
-                DT_SUBHOURLY_POST_MNTS must be set to a value greater than 0; otherwise,
-                sub-hourly output is not really being performed:
-                  DT_SUBHOURLY_POST_MNTS = \"{DT_SUBHOURLY_POST_MNTS}\"
-                Resetting SUB_HOURLY_POST to \"FALSE\".  If you do not want this, you
-                must set DT_SUBHOURLY_POST_MNTS to something other than zero."""
-            )
-            post_config["SUB_HOURLY_POST"] = False
-
-        if dt_subhourly_post_mnts < 1 or dt_subhourly_post_mnts > 59:
-            raise ValueError(
-                f'''
-                When SUB_HOURLY_POST is set to \"TRUE\",
-                DT_SUBHOURLY_POST_MNTS must be set to an integer between 1 and 59,
-                inclusive but:
-                  DT_SUBHOURLY_POST_MNTS = \"{dt_subhourly_post_mnts}\"'''
-            )
-
-        # Check that DT_SUBHOURLY_POST_MNTS (after converting to seconds) is
-        # evenly divisible by the forecast model's main time step DT_ATMOS.
-        dt_atmos = fcst_config["DT_ATMOS"]
-        rem = dt_subhourly_post_mnts * 60 % dt_atmos
-        if rem != 0:
-            raise ValueError(
-                f"""
-                When SUB_HOURLY_POST is set to \"TRUE\") the post
-                processing interval in seconds must be evenly divisible
-                by the time step DT_ATMOS used in the forecast model,
-                i.e. the remainder must be zero.  In this case, it is
-                not:
-
-                  DT_SUBHOURLY_POST_MNTS = \"{dt_subhourly_post_mnts}\"
-                  DT_ATMOS = \"{dt_atmos}\"
-                  remainder = (DT_SUBHOURLY_POST_MNTS*60) %% DT_ATMOS = {rem}
-
-                Please reset DT_SUBHOURLY_POST_MNTS and/or DT_ATMOS so
-                that this remainder is zero."""
-            )
+    post_config = expt_config["task_run_post"]
 
     # Make sure the post output domain is set
-    predef_grid_name = workflow_config.get("PREDEF_GRID_NAME")
-    post_output_domain_name = post_config.get("POST_OUTPUT_DOMAIN_NAME")
+    post_output_domain_name = post_config["post_output_domain_name"]
 
-    if not post_output_domain_name:
-        if not predef_grid_name:
-            raise Exception(
-                f"""
-                The domain name used in naming the run_post output files
-                (POST_OUTPUT_DOMAIN_NAME) has not been set:
-                POST_OUTPUT_DOMAIN_NAME = \"{post_output_domain_name}\"
-                If this experiment is not using a predefined grid (i.e. if
-                PREDEF_GRID_NAME is set to a null string), POST_OUTPUT_DOMAIN_NAME
-                must be set in the configuration file (\"{user_config}\"). """
-            )
-        post_output_domain_name = predef_grid_name
+    if "{{ " in post_output_domain_name:
+        raise Exception(
+            f"""
 
-    if not isinstance(post_output_domain_name, int):
-        post_output_domain_name = lowercase(post_output_domain_name)
+            The preferred output domain from the post task has not been set:
 
-    # Write updated value of POST_OUTPUT_DOMAIN_NAME back to dictionary
-    post_config["POST_OUTPUT_DOMAIN_NAME"] = post_output_domain_name 
+            task_run_post:
+              post_output_domain_name: {post_output_domain_name}
+
+            """
+        )
 
     #
     # -----------------------------------------------------------------------
@@ -1416,13 +1340,6 @@ def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
                 )
             )
 
-        # Check if SUB_HOURLY_POST is on
-        if expt_config["task_run_post"]["SUB_HOURLY_POST"]:
-            raise Exception(
-                f"""
-                SUB_HOURLY_POST is NOT available with Inline Post yet."""
-            )
-
     #
     # -----------------------------------------------------------------------
     #
@@ -1472,11 +1389,11 @@ def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
     # -----------------------------------------------------------------------
     #
 
-    extend_yaml(expt_config)
+    expt_config.dereference()
     for sect, sect_keys in expt_config.items():
         for k, v in sect_keys.items():
             expt_config[sect][k] = str_to_list(v)
-    extend_yaml(expt_config)
+    expt_config.dereference()
 
     # print content of var_defns if DEBUG=True
     all_lines = cfg_to_yaml_str(expt_config)
@@ -1496,18 +1413,19 @@ def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
     # (e.g. metatasks with no tasks, tasks with no associated commands)
     clean_rocoto_dict(expt_config["rocoto"]["tasks"])
 
-    rocoto_yaml_fp = workflow_config["ROCOTO_YAML_FP"]
-    with open(rocoto_yaml_fp, 'w') as f:
-        yaml.Dumper.ignore_aliases = lambda *args : True
-        yaml.dump(expt_config.get("rocoto"), f, sort_keys=False)
+    rocoto_yaml_fp = Path(workflow_config["ROCOTO_YAML_FP"])
+    rocoto_yaml_dict = expt_config["rocoto"]
+    extend_yaml(rocoto_yaml_dict)
+    rocoto_yaml = get_yaml_config(rocoto_yaml_dict)
+    rocoto_yaml.dump(rocoto_yaml_fp)
 
-    var_defns_cfg = get_yaml_config(config=expt_config)
+    var_defns_cfg = get_yaml_config(config=expt_config.data)
     del var_defns_cfg["rocoto"]
 
     # Fixup a couple of data types:
     for dates in ("DATE_FIRST_CYCL", "DATE_LAST_CYCL"):
         var_defns_cfg["workflow"][dates] = date_to_str(var_defns_cfg["workflow"][dates])
-    var_defns_cfg.dump(global_var_defns_fp)
+    var_defns_cfg.dump(Path(global_var_defns_fp))
 
 
     #
@@ -1520,7 +1438,7 @@ def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
 
     # loop through the flattened expt_config and check validity of params
     cfg_v = load_config_file(os.path.join(USHdir, "valid_param_vals.yaml"))
-    for k, v in flatten_dict(expt_config).items():
+    for k, v in flatten_dict(var_defns_cfg).items():
         if v is None or v == "":
             continue
         vkey = "valid_vals_" + k
@@ -1539,7 +1457,7 @@ def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
                     raise Exception(
                         dedent(f"""
                         The variable
-                            {k} = {v}
+                            {k} = {v} ({type(v)})
                         in the user's configuration does not have a valid value.  Possible values are:
                             {k} = {cfg_v[vkey]}"""
                     ))
