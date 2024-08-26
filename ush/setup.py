@@ -1065,6 +1065,7 @@ def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
     post_config = expt_config["task_run_post"]
 
     # Make sure the post output domain is set
+    predef_grid_name = workflow_config.get("PREDEF_GRID_NAME")
     post_output_domain_name = post_config["post_output_domain_name"]
 
     if "{{ " in post_output_domain_name:
