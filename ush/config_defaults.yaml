@@ -1420,19 +1420,20 @@ task_make_orog:
 # to use when the MAKE_SFC_CLIMO task is not meant to run.
 #-----------------------------------------------------------------------
 task_make_sfc_climo:
+  SFC_CLIMO_DIR: '{{ workflow.EXPTDIR + "/sfc_climo" if rocoto.tasks.get("task_make_sfc_climo") else "" }}'
   sfc_climo_gen:
     execution:
       batchargs:
         export: NONE
         nodes: 1
+        tasks_per_node: 24
         stdout: "{{ user.HOMEdir }}/scripts"
         walltime: 00:02:00
       envcmds:
         - module load {{ user.HOMEdir }}/modulefiles
         - module load build_{{ user.MACHINE|lower() }}_{{ workflow.COMPILER }}
       executable: "{{ user.EXECdir }}/sfc_climo_gen OR {{ user.HOMEdir }}/{{ workflow.EXEC_SUBDIR }}/sfc_climo_gen"
-      mpicmd:
-        - "{{ platform.BATCH_RUN_CMD }}"
+      mpicmd: '{{ platform.BATCH_RUN_CMD }}'
     namelist:
       update_values:
         config:
@@ -1444,10 +1445,11 @@ task_make_sfc_climo:
           input_soil_type_file: "{{ platform.FIXsfc }}/soil_type.statsgo.0.05.nc"
           input_vegetation_type_file: "{{ platform.FIXsfc }}/vegetation_type.igbp.0.05.nc"
           input_vegetation_greenness_file: "{{ platform.FIXsfc }}/vegetation_greenness.0.144.nc"
-          mosaic_file_mdl: "{{ workflow.FIXlam }}/{{ workflow.CRES }}{{ workflow.DOT_OR_USCORE }}mosaic.halo{{ constants.NH4 }}.nc"
+          mosaic_file_mdl: "{{ workflow.FIXlam }}/{{ 'CRES' | env }}{{ workflow.DOT_OR_USCORE }}mosaic.halo{{ constants.NH4 }}.nc"
           orog_dir_mdl: "{{ workflow.FIXlam }}"
-          orog_files_mdl: "{{ workflow.CRES }}{{ workflow.DOT_OR_USCORE }}oro_data.tile{{ constants.TILE_RGNL }}.halo{{ constants.NH4 }}.nc"
-          halo: "{{ constants.NH4 }}"
+          orog_files_mdl: 
+            - "{{ 'CRES' | env }}{{ workflow.DOT_OR_USCORE }}oro_data.tile{{ constants.TILE_RGNL }}.halo{{ constants.NH4 }}.nc"
+          halo: !int '{{ constants.NH4 }}'
           maximum_snow_albedo_method: "bilinear"
           snowfree_albedo_method: "bilinear"
           vegetation_greenness_method: "bilinear"

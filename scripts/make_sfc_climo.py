@@ -3,6 +3,7 @@ The run script for SfcClimoGen
 """
 
 import datetime as dt
+import glob
 import os
 import re
 import sys
@@ -35,13 +36,27 @@ parser.add_argument(
 args = parser.parse_args()
 
 
+# Deliver output data
+expt_config = get_yaml_config(args.config_file)
+CRES = expt_config["workflow"]["CRES"]
+os.environ["CRES"] = CRES 
+expt_config.dereference(
+    context={
+        **os.environ,
+        **expt_config,
+    }
+)
+
+
 # Extract driver config from experiment config
 sfc_climo_gen_driver = SfcClimoGen(
-    config=args.config_file,
+    config=expt_config,
     key_path=[args.key_path],
 )
 rundir = Path(sfc_climo_gen_driver.config["rundir"])
 print(f"Will run in {rundir}")
+
+
 # Run sfc_climo_gen 
 sfc_climo_gen_driver.run()
 
@@ -50,22 +65,19 @@ if not (rundir / "runscript.sfc_climo_gen.done").is_file():
     sys.exit(1)
 
 # Deliver output data
-expt_config = get_yaml_config(args.config_file)
 sfc_climo_gen_config = expt_config[args.key_path]
 
-links = {}
-for label in sfc_climo_gen_config["output_file_labels"]:
-    # deepcopy here because desired_output_name is parameterized within the loop
-    expt_config_cp = get_yaml_config(deepcopy(expt_config.data))
-    expt_config_cp.dereference(
-        context={
-            "file_label": label,
-            **expt_config_cp,
-        }
-    )
-    sfc_climo_gen_block = expt_config_cp[args.key_path]
-    desired_output_fn = sfc_climo_gen_block["desired_output_name"]
-    sfc_climo_gen_output_fn = rundir / f"{label.sfc_climo_gen()}"
-    links[desired_output_fn] = str(sfc_climo_gen_output_fn)
+src = Path(expt_config["workflow"]["FIXlam"])
+for fpath in glob.glob(str(rundir / "*.nc")):
+    fn = Path(fpath).name
+    dst = src / f"{CRES}.{fn}"
+    dst.symlink_to(src)
+    if "halo" in fn:
+        dst = src / f"{CRES}_{(fn.replace('halo', 'halo4'))}" 
+        dst.symlink_to(src)
+    else:
+        bn = fn.split(".nc")[0]
+        dst = src / f"{CRES}.{bn}.halo0.nc"
+        dst.symlink_to(src)
 
-uwlink(target_dir=rundir.parent, config=links)
+Path(rundir / "make_sfc_climo_task_complete.txt").touch()
