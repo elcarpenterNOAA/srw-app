@@ -1177,6 +1177,78 @@ nco:
 # MAKE GRID config parameters
 #-----------------------------
 task_make_grid:
+  make_hgrid:
+    config:
+      do_schmidt:
+      great_circle_algorithm:
+      grid_name:
+      grid_type: gnomonic_ed
+      halo: 1
+      iend_nest:
+        - 
+      istart_nest:
+        - 
+      jend_nest:
+        - 
+      jstart_nest:
+        - 
+      nest_grids:
+      nlon:
+        - 
+      parent_tile:
+        - 6
+      refine_ratio:
+        - 
+      stretch_factor:
+      target_lat: 
+      target_lon:
+  esg_grid:
+    namelist:
+      base_file:
+      update_values:
+        regional_grid_nml:
+          delx:
+          dely:
+          lx:
+          ly:
+          pazi:
+          plat:
+          plon:
+      validate:
+    rundir:
+  global_equiv_resol:
+    execution:
+      batchargs:
+        cores: 1
+        walltime: "00:01:00"
+          executable: 
+        input_grid_file:
+        rundir:
+  make_solo_mosaic:
+    config:
+      dir:
+      num_tiles:
+      mosaic_name:
+      periodx:
+      periody:
+      tile_file:
+    execution:
+      batchargs:
+        cores: 1
+        walltime: "00:01:00"
+      executable: 
+  shave:
+    config:
+      input_grid_file:
+      nh4:
+      nx: 
+      ny:
+    execution:
+      batchargs:
+        cores:
+        walltime:
+      executable:
+    rundir:
   #
   #-----------------------------------------------------------------------
   #
