@@ -69,21 +69,19 @@ if not (rundir / "runscript.sfc_climo_gen.done").is_file():
 sfc_climo_gen_config = expt_config[args.key_path]
 
 fix_lam_path = Path(expt_config["workflow"]["FIXlam"])
-for fpath in glob.glob(str(rundir / "*.nc")):
+for fpath in glob.glob(str(rundir / f"*.nc")):
     path = Path(fpath)
     fn = Path(fpath).name
 
-    #dst = fix_lam_path / f"{CRES}.{fn}"
-    #linkname = fix_lam_path / dst.name
-    #linkname.symlink_to(path)
-    path = fix_lam_path / f"{CRES}.{fn}"
-
     if "halo" in fn:
-        dst = fix_lam_path / f"{CRES}_{(fn.replace('halo', 'halo4'))}"
+        fn = f"{CRES}_{(fn.replace('halo', 'halo4'))}"
     else:
         bn = fn.split(".nc")[0]
-        dst = fix_lam_path / f"{CRES}.{bn}.halo0.nc"
-    linkname = fix_lam_path / dst.name
-    path.symlink_to(linkname)
+        fn = f"{CRES}.{bn}.halo0.nc"
+    update_path = path.with_name(fn)
+    fn = path.rename(update_path)
+
+    # linkname = fix_lam_path / .name
+    # path.symlink_to(linkname)
 
 Path(rundir / "make_sfc_climo_task_complete.txt").touch()
