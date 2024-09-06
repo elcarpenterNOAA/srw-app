@@ -64,20 +64,26 @@ if not (rundir / "runscript.sfc_climo_gen.done").is_file():
     print("Error occurred running sfc_climo_gen. Please see component error logs.")
     sys.exit(1)
 
+
 # Deliver output data
 sfc_climo_gen_config = expt_config[args.key_path]
 
-src = Path(expt_config["workflow"]["FIXlam"])
+fix_lam_path = Path(expt_config["workflow"]["FIXlam"])
 for fpath in glob.glob(str(rundir / "*.nc")):
+    path = Path(fpath)
     fn = Path(fpath).name
-    dst = src / f"{CRES}.{fn}"
-    dst.symlink_to(src)
+
+    #dst = fix_lam_path / f"{CRES}.{fn}"
+    #linkname = fix_lam_path / dst.name
+    #linkname.symlink_to(path)
+    path = fix_lam_path / f"{CRES}.{fn}"
+
     if "halo" in fn:
-        dst = src / f"{CRES}_{(fn.replace('halo', 'halo4'))}" 
-        dst.symlink_to(src)
+        dst = fix_lam_path / f"{CRES}_{(fn.replace('halo', 'halo4'))}"
     else:
         bn = fn.split(".nc")[0]
-        dst = src / f"{CRES}.{bn}.halo0.nc"
-        dst.symlink_to(src)
+        dst = fix_lam_path / f"{CRES}.{bn}.halo0.nc"
+    linkname = fix_lam_path / dst.name
+    path.symlink_to(linkname)
 
 Path(rundir / "make_sfc_climo_task_complete.txt").touch()
