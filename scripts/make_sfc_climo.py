@@ -33,14 +33,11 @@ parser.add_argument(
     metavar="KEY[.KEY...]",
     required=True,
 )
+
+
 args = parser.parse_args()
-
-
-# Deliver output data
 expt_config = get_yaml_config(args.config_file)
 CRES = expt_config["workflow"]["CRES"]
-SFC_CLIMO_FIELDS = expt_config["fixed_files"]["SFC_CLIMO_FIELDS"]
-TILE_RGNL = expt_config["constants"]["TILE_RGNL"]
 os.environ["CRES"] = CRES 
 expt_config.dereference(
     context={
@@ -50,16 +47,13 @@ expt_config.dereference(
 )
 
 
-# Extract driver config from experiment config
+# Run sfc_climo_gen 
 sfc_climo_gen_driver = SfcClimoGen(
     config=expt_config,
     key_path=[args.key_path],
 )
 rundir = Path(sfc_climo_gen_driver.config["rundir"])
-print(f"Will run in {rundir}")
-
-
-# Run sfc_climo_gen 
+print(f"Will run sfc_climo_gen in {rundir}")
 sfc_climo_gen_driver.run()
 
 if not (rundir / "runscript.sfc_climo_gen.done").is_file():
@@ -68,25 +62,29 @@ if not (rundir / "runscript.sfc_climo_gen.done").is_file():
 
 
 # Deliver output data
-sfc_climo_gen_config = expt_config[args.key_path]
 
 fix_lam_path = Path(expt_config["workflow"]["FIXlam"])
 for fpath in glob.glob(str(rundir / f"*.nc")):
     path = Path(fpath)
     fn = Path(fpath).name
 
-#    if not "halo" in fn:
-#        # fn = f"{CRES}.{SFC_CLIMO_FIELDS}.tile{TILE_RGNL}.halo4.nc"
-#        bn = fn.split(".nc")[0]
-#        fn = f"{CRES}.{bn}.halo0.nc"
-#    else:
-#        # fn = f"{CRES}.{SFC_CLIMO_FIELDS}.tile{TILE_RGNL}.halo0.nc"
-#        fn = f"{CRES}.{(fn.replace('halo', 'halo4'))}"
-#
-    update_path = path.with_name(fn)
-    fn = path.rename(update_path)
+    if "halo" in fn:
+        fn = f"{CRES}.{(fn.replace('halo', 'halo4'))}"
+        no_halo_fn = fn.replace("halo4.", "")
+        for link in (fn, no_halo_fn):
+            link = Path(link)
+            if (linkname := fix_lam_path / link.name).is_symlink():
+                linkname.unlink()
+            linkname.symlink_to(path)
 
-    linkname = fix_lam_path / fn.name 
-    linkname.symlink_to(path)
+    else:
+        bn = fn.split(".nc")[0]
+        fn = f"{CRES}.{bn}.halo0.nc"
+        tile1_fn = fn.replace("tile7.halo0", "tile1")
+        for link in (fn, tile1_fn):
+            link = Path(link)
+            if (linkname := fix_lam_path / link.name).is_symlink():
+                linkname.unlink()
+            linkname.symlink_to(path)
 
 Path(rundir / "make_sfc_climo_task_complete.txt").touch()
