@@ -1315,7 +1315,8 @@ def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
                 )
 
     workflow_config["RES_IN_FIXLAM_FILENAMES"] = res_in_fixlam_filenames
-    workflow_config["CRES"] = f"C{res_in_fixlam_filenames}"
+    if res_in_fixlam_filenames:
+        workflow_config["CRES"] = f"C{res_in_fixlam_filenames}"
 
     #
     # -----------------------------------------------------------------------

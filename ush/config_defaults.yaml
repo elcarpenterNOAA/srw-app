@@ -1430,7 +1430,7 @@ task_make_sfc_climo:
         stdout: "{{ user.HOMEdir }}/scripts"
         walltime: 00:02:00
       envcmds:
-        - module load {{ user.HOMEdir }}/modulefiles
+        - module use {{ user.HOMEdir }}/modulefiles
         - module load build_{{ user.MACHINE|lower() }}_{{ workflow.COMPILER }}
       executable: "{{ user.EXECdir }}/sfc_climo_gen OR {{ user.HOMEdir }}/{{ workflow.EXEC_SUBDIR }}/sfc_climo_gen"
       mpicmd: '{{ platform.BATCH_RUN_CMD }}'
