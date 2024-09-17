@@ -911,7 +911,10 @@ workflow:
   #
   #-----------------------------------------------------------------------
   #
-  GRID_GEN_METHOD: ""
+
+
+  # ELC -- default ok?
+  GRID_GEN_METHOD: ESGgrid
   #
   #-----------------------------------------------------------------------
   #
@@ -1177,6 +1180,7 @@ nco:
 # MAKE GRID config parameters
 #-----------------------------
 task_make_grid:
+  rundir: '{{ workflow.EXPTDIR + "/grid" if rocoto.tasks.get("task_make_grid") else "" }}'
   make_hgrid:
     config:
       do_schmidt:
@@ -1221,7 +1225,7 @@ task_make_grid:
       batchargs:
         cores: 1
         walltime: "00:01:00"
-          executable: 
+          executable: "{{ user.EXECdir }}/global_equiv_resol"
         input_grid_file:
         rundir:
   make_solo_mosaic:
@@ -1236,19 +1240,33 @@ task_make_grid:
       batchargs:
         cores: 1
         walltime: "00:01:00"
-      executable: 
-  shave:
-    config:
-      input_grid_file:
-      nh4:
-      nx: 
-      ny:
-    execution:
-      batchargs:
-        cores:
-        walltime:
-      executable:
-    rundir:
+      executable: "{{ user.EXECdir }}/make_solo_mosaic"
+  shave03:
+    shave:
+      config:
+        input_grid_file:
+        nhalo: !int "{{ constants.NH3 }}"
+        nx: !int "{{ grid_params.NX }}"
+        ny: !int "{{ grid_params.NY }}"
+      execution:
+        batchargs:
+          cores:
+          walltime: 00:05:00
+        executable: "{{ user.EXECdir }}/shave"
+      rundir: "{{ task_make_grid.rundir }}/shave3"
+  shave04:
+    shave:
+      config:
+        input_grid_file:
+        nhalo: !int "{{ constants.NH4 }}"
+        nx:
+        ny:
+      execution:
+        batchargs:
+          cores:
+          walltime: 00:05:00
+        executable: "{{ user.EXECdir }}/shave"
+      rundir: "{{ task_make_grid.rundir }}/shave4"
   #
   #-----------------------------------------------------------------------
   #
@@ -1309,15 +1327,29 @@ task_make_grid:
   # The rotational parameter for the ESG grid (in degrees).
   #
   #-----------------------------------------------------------------------
-  #
-  ESGgrid_LON_CTR: ""
-  ESGgrid_LAT_CTR: ""
-  ESGgrid_DELX: ""
-  ESGgrid_DELY: ""
-  ESGgrid_NX: ""
-  ESGgrid_NY: ""
-  ESGgrid_WIDE_HALO_WIDTH: ""
-  ESGgrid_PAZI: ""
+
+  # ELC: these are esg grid params, not gfdl grid params
+  user_defined_grid:
+    esggrid:
+      lon_ctr: ""
+      lat_ctr: ""
+      delx: ""
+      dely: ""
+      ny: ""
+      ny: ""
+      halo_width: ""
+      pazi: ""
+    gfdlgrid:
+      lon_of_t6_ctr: ""
+      GFDLgrid_LAT_T6_CTR: ""
+      GFDLgrid_NUM_CELLS: ""
+      GFDLgrid_STRETCH_FAC: ""
+      GFDLgrid_REFINE_RATIO: ""
+      GFDLgrid_ISTART_OF_RGNL_DOM_ON_T6G: ""
+      GFDLgrid_IEND_OF_RGNL_DOM_ON_T6G: ""
+      GFDLgrid_JSTART_OF_RGNL_DOM_ON_T6G: ""
+      GFDLgrid_JEND_OF_RGNL_DOM_ON_T6G: ""
+      GFDLgrid_USE_NUM_CELLS_IN_FILENAMES: ""
 
   #-----------------------------------------------------------------------
   #

@@ -843,6 +843,10 @@ def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
     #
     grid_gen_method = workflow_config["GRID_GEN_METHOD"]
     if grid_gen_method == "GFDLgrid":
+        # where does user-defined grid get defined? config is empty
+        grid_params = set_gridparams_GFDLgrid(constans=constants, **grid_config["user_defined_grid"]["gfdlgrid"])
+    
+        """
         grid_params = set_gridparams_GFDLgrid(
             lon_of_t6_ctr=grid_config["GFDLgrid_LON_T6_CTR"],
             lat_of_t6_ctr=grid_config["GFDLgrid_LAT_T6_CTR"],
@@ -857,7 +861,10 @@ def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
             nh4=expt_config["constants"]["NH4"],
             run_envir=run_envir,
         )
+        """
     elif grid_gen_method == "ESGgrid":
+        grid_params = set_gridparams_ESGgrid(constans=constants, **grid_config["user_defined_grid"]["esggrid"])
+        """
         grid_params = set_gridparams_ESGgrid(
             lon_ctr=grid_config["ESGgrid_LON_CTR"],
             lat_ctr=grid_config["ESGgrid_LAT_CTR"],
@@ -869,6 +876,7 @@ def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
             dely=grid_config["ESGgrid_DELY"],
             constants=expt_config["constants"],
         )
+        """
     else:
 
         errmsg = dedent(
