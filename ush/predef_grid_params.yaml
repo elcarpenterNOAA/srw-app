@@ -53,32 +53,33 @@
 #
 "RRFS_CONUS_25km":
   GRID_GEN_METHOD: "ESGgrid"
-  ESGgrid_LON_CTR: -97.5
-  ESGgrid_LAT_CTR: 38.5
-  ESGgrid_DELX: 25000.0
-  ESGgrid_DELY: 25000.0
-  ESGgrid_NX: 219
-  ESGgrid_NY: 131
-  ESGgrid_PAZI: 0.0
-  ESGgrid_WIDE_HALO_WIDTH: 6
+  grid_settings:
+    lon_ctr: -97.5
+    lat_ctr: 38.5
+    delx: 25000.0
+    dely: 25000.0
+    nx: 219
+    ny: 131
+    pazi: 0.0
+    halo_width: 6
   DT_ATMOS: 150
   LAYOUT_X: 5
   LAYOUT_Y: 2
   BLOCKSIZE: 40
   QUILTING:
-    WRTCMP_write_groups: 1
-    WRTCMP_write_tasks_per_group: 2
-    WRTCMP_output_grid: "lambert_conformal"
-    WRTCMP_cen_lon: -97.5
-    WRTCMP_cen_lat: 38.5
-    WRTCMP_stdlat1: 38.5
-    WRTCMP_stdlat2: 38.5
-    WRTCMP_nx: 217
-    WRTCMP_ny: 128
-    WRTCMP_lon_lwr_left: -122.719528
-    WRTCMP_lat_lwr_left: 21.138123
-    WRTCMP_dx: 25000.0
-    WRTCMP_dy: 25000.0
+    write_groups: 1
+    write_tasks_per_group: 2
+    cen_lon: -97.5
+    cen_lat: 38.5
+    lon1: -122.719528
+    lat1: 21.138123
+    stdlat1: 38.5
+    stdlat2: 38.5
+    output_grid: "lambert_conformal"
+    nx: 217
+    ny: 128
+    dx: 25000.0
+    dy: 25000.0
 #
 #-----------------------------------------------------------------------
 #
@@ -88,32 +89,33 @@
 #
 "RRFS_CONUScompact_25km":
   GRID_GEN_METHOD: "ESGgrid"
-  ESGgrid_LON_CTR: -97.5
-  ESGgrid_LAT_CTR: 38.5
-  ESGgrid_DELX: 25000.0
-  ESGgrid_DELY: 25000.0
-  ESGgrid_NX: 202
-  ESGgrid_NY: 116
-  ESGgrid_PAZI: 0.0
-  ESGgrid_WIDE_HALO_WIDTH: 6
+  grid_settings:
+    lon_ctr: -97.5
+    lat_ctr: 38.5
+    delx: 25000.0
+    dely: 25000.0
+    nx: 202
+    ny: 116
+    pazi: 0.0
+    halo_width: 6
   DT_ATMOS: 180
   LAYOUT_X: 5
   LAYOUT_Y: 2
   BLOCKSIZE: 40
   QUILTING:
-    WRTCMP_write_groups: 1
-    WRTCMP_write_tasks_per_group: 2
-    WRTCMP_output_grid: "lambert_conformal"
-    WRTCMP_cen_lon: -97.5
-    WRTCMP_cen_lat: 38.5
-    WRTCMP_stdlat1: 38.5
-    WRTCMP_stdlat2: 38.5
-    WRTCMP_nx: 199
-    WRTCMP_ny: 111
-    WRTCMP_lon_lwr_left: -121.23349066
-    WRTCMP_lat_lwr_left: 23.41731593
-    WRTCMP_dx: 25000.0
-    WRTCMP_dy: 25000.0
+    write_groups: 1
+    write_tasks_per_group: 2
+    output_grid: "lambert_conformal"
+    cen_lon: -97.5
+    cen_lat: 38.5
+    stdlat1: 38.5
+    stdlat2: 38.5
+    nx: 199
+    ny: 111
+    lon1: -121.23349066
+    lat1: 23.41731593
+    dx: 25000.0
+    dy: 25000.0
 #
 #-----------------------------------------------------------------------
 #
@@ -123,32 +125,33 @@
 #
 "RRFS_CONUS_13km":
   GRID_GEN_METHOD: "ESGgrid"
-  ESGgrid_LON_CTR: -97.5
-  ESGgrid_LAT_CTR: 38.5
-  ESGgrid_DELX: 13000.0
-  ESGgrid_DELY: 13000.0
-  ESGgrid_NX: 420
-  ESGgrid_NY: 252
-  ESGgrid_PAZI: 0.0
-  ESGgrid_WIDE_HALO_WIDTH: 6
+  grid_settings:
+    lon_ctr: -97.5
+    lat_ctr: 38.5
+    delx: 13000.0
+    dely: 13000.0
+    nx: 420
+    ny: 252
+    pazi: 0.0
+    halo_width: 6
   DT_ATMOS: 75
   LAYOUT_X: 16
   LAYOUT_Y: 10
   BLOCKSIZE: 32
   QUILTING:
-    WRTCMP_write_groups: 1
-    WRTCMP_write_tasks_per_group: 10
-    WRTCMP_output_grid: "lambert_conformal"
-    WRTCMP_cen_lon: -97.5
-    WRTCMP_cen_lat: 38.5
-    WRTCMP_stdlat1: 38.5
-    WRTCMP_stdlat2: 38.5
-    WRTCMP_nx: 416
-    WRTCMP_ny: 245
-    WRTCMP_lon_lwr_left: -122.719528
-    WRTCMP_lat_lwr_left: 21.138123
-    WRTCMP_dx: 13000.0
-    WRTCMP_dy: 13000.0
+    write_groups: 1
+    write_tasks_per_group: 10
+    output_grid: "lambert_conformal"
+    cen_lon: -97.5
+    cen_lat: 38.5
+    stdlat1: 38.5
+    stdlat2: 38.5
+    nx: 416
+    ny: 245
+    lon1: -122.719528
+    lat1: 21.138123
+    dx: 13000.0
+    dy: 13000.0
 #
 #-----------------------------------------------------------------------
 #
@@ -158,32 +161,33 @@
 #
 "RRFS_CONUScompact_13km":
   GRID_GEN_METHOD: "ESGgrid"
-  ESGgrid_LON_CTR: -97.5
-  ESGgrid_LAT_CTR: 38.5
-  ESGgrid_DELX: 13000.0
-  ESGgrid_DELY: 13000.0
-  ESGgrid_NX: 396
-  ESGgrid_NY: 232
-  ESGgrid_PAZI: 0.0
-  ESGgrid_WIDE_HALO_WIDTH: 6
+  grid_settings:
+    lon_ctr: -97.5
+    lat_ctr: 38.5
+    delx: 13000.0
+    dely: 13000.0
+    nx: 396
+    ny: 232
+    pazi: 0.0
+    halo_width: 6
   DT_ATMOS: 75
   LAYOUT_X: 16
   LAYOUT_Y: 10
   BLOCKSIZE: 32
   QUILTING:
-    WRTCMP_write_groups: 1
-    WRTCMP_write_tasks_per_group: 16
-    WRTCMP_output_grid: "lambert_conformal"
-    WRTCMP_cen_lon: -97.5
-    WRTCMP_cen_lat: 38.5
-    WRTCMP_stdlat1: 38.5
-    WRTCMP_stdlat2: 38.5
-    WRTCMP_nx: 393
-    WRTCMP_ny: 225
-    WRTCMP_lon_lwr_left: -121.70231097
-    WRTCMP_lat_lwr_left: 22.57417972
-    WRTCMP_dx: 13000.0
-    WRTCMP_dy: 13000.0
+    write_groups: 1
+    write_tasks_per_group: 16
+    output_grid: "lambert_conformal"
+    cen_lon: -97.5
+    cen_lat: 38.5
+    stdlat1: 38.5
+    stdlat2: 38.5
+    nx: 393
+    ny: 225
+    lon1: -121.70231097
+    lat1: 22.57417972
+    dx: 13000.0
+    dy: 13000.0
 #
 #-----------------------------------------------------------------------
 #
@@ -193,32 +197,33 @@
 #
 "RRFS_CONUS_3km":
   GRID_GEN_METHOD: "ESGgrid"
-  ESGgrid_LON_CTR: -97.5
-  ESGgrid_LAT_CTR: 38.5
-  ESGgrid_DELX: 3000.0
-  ESGgrid_DELY: 3000.0
-  ESGgrid_NX: 1820
-  ESGgrid_NY: 1092
-  ESGgrid_PAZI: 0.0
-  ESGgrid_WIDE_HALO_WIDTH: 6
+  grid_settings:
+    lon_ctr: -97.5
+    lat_ctr: 38.5
+    delx: 3000.0
+    dely: 3000.0
+    nx: 1820
+    ny: 1092
+    pazi: 0.0
+    halo_width: 6
   DT_ATMOS: 36
   LAYOUT_X: 28
   LAYOUT_Y: 28
   BLOCKSIZE: 28
   QUILTING:
-    WRTCMP_write_groups: 1
-    WRTCMP_write_tasks_per_group: 28
-    WRTCMP_output_grid: "lambert_conformal"
-    WRTCMP_cen_lon: -97.5
-    WRTCMP_cen_lat: 38.5
-    WRTCMP_stdlat1: 38.5
-    WRTCMP_stdlat2: 38.5
-    WRTCMP_nx: 1799
-    WRTCMP_ny: 1059
-    WRTCMP_lon_lwr_left: -122.719528
-    WRTCMP_lat_lwr_left: 21.138123
-    WRTCMP_dx: 3000.0
-    WRTCMP_dy: 3000.0
+    write_groups: 1
+    write_tasks_per_group: 28
+    output_grid: "lambert_conformal"
+    cen_lon: -97.5
+    cen_lat: 38.5
+    stdlat1: 38.5
+    stdlat2: 38.5
+    nx: 1799
+    ny: 1059
+    lon1: -122.719528
+    lat1: 21.138123
+    dx: 3000.0
+    dy: 3000.0
 #
 #-----------------------------------------------------------------------
 #
@@ -228,32 +233,33 @@
 #
 "RRFS_CONUScompact_3km":
   GRID_GEN_METHOD: "ESGgrid"
-  ESGgrid_LON_CTR: -97.5
-  ESGgrid_LAT_CTR: 38.5
-  ESGgrid_DELX: 3000.0
-  ESGgrid_DELY: 3000.0
-  ESGgrid_NX: 1748
-  ESGgrid_NY: 1038
-  ESGgrid_PAZI: 0.0
-  ESGgrid_WIDE_HALO_WIDTH: 6
+  grid_settings:
+    lon_ctr: -97.5
+    lat_ctr: 38.5
+    delx: 3000.0
+    dely: 3000.0
+    nx: 1748
+    ny: 1038
+    pazi: 0.0
+    halo_width: 6
   DT_ATMOS: 36
   LAYOUT_X: 30
   LAYOUT_Y: 16
   BLOCKSIZE: 32
   QUILTING:
-    WRTCMP_write_groups: 1
-    WRTCMP_write_tasks_per_group: 16
-    WRTCMP_output_grid: "lambert_conformal"
-    WRTCMP_cen_lon: -97.5
-    WRTCMP_cen_lat: 38.5
-    WRTCMP_stdlat1: 38.5
-    WRTCMP_stdlat2: 38.5
-    WRTCMP_nx: 1746
-    WRTCMP_ny: 1014
-    WRTCMP_lon_lwr_left: -122.17364391
-    WRTCMP_lat_lwr_left: 21.88588562
-    WRTCMP_dx: 3000.0
-    WRTCMP_dy: 3000.0
+    write_groups: 1
+    write_tasks_per_group: 16
+    output_grid: "lambert_conformal"
+    cen_lon: -97.5
+    cen_lat: 38.5
+    stdlat1: 38.5
+    stdlat2: 38.5
+    nx: 1746
+    ny: 1014
+    lon1: -122.17364391
+    lat1: 21.88588562
+    dx: 3000.0
+    dy: 3000.0
 #
 #-----------------------------------------------------------------------
 #
@@ -265,32 +271,33 @@
 #
 "SUBCONUS_Ind_3km":
   GRID_GEN_METHOD: "ESGgrid"
-  ESGgrid_LON_CTR: -86.16
-  ESGgrid_LAT_CTR: 39.77
-  ESGgrid_DELX: 3000.0
-  ESGgrid_DELY: 3000.0
-  ESGgrid_NX: 200
-  ESGgrid_NY: 200
-  ESGgrid_PAZI: 0.0
-  ESGgrid_WIDE_HALO_WIDTH: 6
+  grid_settings:
+    lon_ctr: -86.16
+    lat_ctr: 39.77
+    delx: 3000.0
+    dely: 3000.0
+    nx: 200
+    ny: 200
+    pazi: 0.0
+    halo_width: 6
   DT_ATMOS: 36
   LAYOUT_X: 5
   LAYOUT_Y: 5
   BLOCKSIZE: 40
   QUILTING:
-    WRTCMP_write_groups: 1
-    WRTCMP_write_tasks_per_group: 5
-    WRTCMP_output_grid: "lambert_conformal"
-    WRTCMP_cen_lon: -86.16
-    WRTCMP_cen_lat: 39.77
-    WRTCMP_stdlat1: 39.77
-    WRTCMP_stdlat2: 39.77
-    WRTCMP_nx: 197
-    WRTCMP_ny: 197
-    WRTCMP_lon_lwr_left: -89.47120417
-    WRTCMP_lat_lwr_left: 37.07809642
-    WRTCMP_dx: 3000.0
-    WRTCMP_dy: 3000.0
+    write_groups: 1
+    write_tasks_per_group: 5
+    output_grid: "lambert_conformal"
+    cen_lon: -86.16
+    cen_lat: 39.77
+    stdlat1: 39.77
+    stdlat2: 39.77
+    nx: 197
+    ny: 197
+    lon1: -89.47120417
+    lat1: 37.07809642
+    dx: 3000.0
+    dy: 3000.0
 #
 #-----------------------------------------------------------------------
 #
@@ -303,32 +310,33 @@
 #
 "RRFS_AK_13km":
   GRID_GEN_METHOD: "ESGgrid"
-  ESGgrid_LON_CTR: -161.5
-  ESGgrid_LAT_CTR: 63.0
-  ESGgrid_DELX: 13000.0
-  ESGgrid_DELY: 13000.0
-  ESGgrid_NX: 320
-  ESGgrid_NY: 240
-  ESGgrid_PAZI: 0.0
-  ESGgrid_WIDE_HALO_WIDTH: 6
+  grid_settings:
+    lon_ctr: -161.5
+    lat_ctr: 63.0
+    delx: 13000.0
+    dely: 13000.0
+    nx: 320
+    ny: 240
+    pazi: 0.0
+    halo_width: 6
   DT_ATMOS: 10
   LAYOUT_X: 16
   LAYOUT_Y: 12
   BLOCKSIZE: 40
   QUILTING:
-    WRTCMP_write_groups: 1
-    WRTCMP_write_tasks_per_group: 12
-    WRTCMP_output_grid: "lambert_conformal"
-    WRTCMP_cen_lon: -161.5
-    WRTCMP_cen_lat: 63.0
-    WRTCMP_stdlat1: 63.0
-    WRTCMP_stdlat2: 63.0
-    WRTCMP_nx: 318
-    WRTCMP_ny: 234
-    WRTCMP_lon_lwr_left: 172.23339164
-    WRTCMP_lat_lwr_left: 45.77691870
-    WRTCMP_dx: 13000.0
-    WRTCMP_dy: 13000.0
+    write_groups: 1
+    write_tasks_per_group: 12
+    output_grid: "lambert_conformal"
+    cen_lon: -161.5
+    cen_lat: 63.0
+    stdlat1: 63.0
+    stdlat2: 63.0
+    nx: 318
+    ny: 234
+    lon1: 172.23339164
+    lat1: 45.77691870
+    dx: 13000.0
+    dy: 13000.0
 #
 #-----------------------------------------------------------------------
 #
@@ -341,32 +349,33 @@
 #
 "RRFS_AK_3km":
   GRID_GEN_METHOD: "ESGgrid"
-  ESGgrid_LON_CTR: -161.5
-  ESGgrid_LAT_CTR: 63.0
-  ESGgrid_DELX: 3000.0
-  ESGgrid_DELY: 3000.0
-  ESGgrid_NX: 1380
-  ESGgrid_NY: 1020
-  ESGgrid_PAZI: 0.0
-  ESGgrid_WIDE_HALO_WIDTH: 6
+  grid_settings:
+    lon_ctr: -161.5
+    lat_ctr: 63.0
+    delx: 3000.0
+    dely: 3000.0
+    nx: 1380
+    ny: 1020
+    pazi: 0.0
+    halo_width: 6
   DT_ATMOS: 30
   LAYOUT_X: 30
   LAYOUT_Y: 17
   BLOCKSIZE: 40
   QUILTING:
-    WRTCMP_write_groups: 1
-    WRTCMP_write_tasks_per_group: 17
-    WRTCMP_output_grid: "lambert_conformal"
-    WRTCMP_cen_lon: -161.5
-    WRTCMP_cen_lat: 63.0
-    WRTCMP_stdlat1: 63.0
-    WRTCMP_stdlat2: 63.0
-    WRTCMP_nx: 1379
-    WRTCMP_ny: 1003
-    WRTCMP_lon_lwr_left: -187.89737923
-    WRTCMP_lat_lwr_left: 45.84576053
-    WRTCMP_dx: 3000.0
-    WRTCMP_dy: 3000.0
+    write_groups: 1
+    write_tasks_per_group: 17
+    output_grid: "lambert_conformal"
+    cen_lon: -161.5
+    cen_lat: 63.0
+    stdlat1: 63.0
+    stdlat2: 63.0
+    nx: 1379
+    ny: 1003
+    lon1: -187.89737923
+    lat1: 45.84576053
+    dx: 3000.0
+    dy: 3000.0
 #
 #-----------------------------------------------------------------------
 #
@@ -376,7 +385,7 @@
 # The WoFS domain will generate a 301 x 301 output grid (WRITE COMPONENT) and
 # will eventually be movable (ESGgrid_LON_CTR/ESGgrid_LAT_CTR). A python script
 # python_utils/fv3write_parms_lambert will be useful to determine
-# WRTCMP_lon_lwr_left and WRTCMP_lat_lwr_left locations (only for Lambert map 
+# lon1 and lat1 locations (only for Lambert map 
 # projection currently) of the quilting output when the domain location is 
 # moved. Later, it should be integrated into the workflow.
 #
@@ -384,32 +393,33 @@
 #
 "WoFS_3km":
   GRID_GEN_METHOD: "ESGgrid"
-  ESGgrid_LON_CTR: -97.5
-  ESGgrid_LAT_CTR: 38.5
-  ESGgrid_DELX: 3000.0
-  ESGgrid_DELY: 3000.0
-  ESGgrid_NX: 361
-  ESGgrid_NY: 361
-  ESGgrid_PAZI: 0.0
-  ESGgrid_WIDE_HALO_WIDTH: 6
+  grid_settings:
+    lon_ctr: -97.5
+    lat_ctr: 38.5
+    delx: 3000.0
+    dely: 3000.0
+    nx: 361
+    ny: 361
+    pazi: 0.0
+    halo_width: 6
   DT_ATMOS: 20
   LAYOUT_X: 18
   LAYOUT_Y: 12
   BLOCKSIZE: 30
   QUILTING:
-    WRTCMP_write_groups: "1"
-    WRTCMP_write_tasks_per_group: 12
-    WRTCMP_output_grid: "lambert_conformal"
-    WRTCMP_cen_lon: -97.5
-    WRTCMP_cen_lat: 38.5
-    WRTCMP_stdlat1: 38.5
-    WRTCMP_stdlat2: 38.5
-    WRTCMP_nx: 301
-    WRTCMP_ny: 301
-    WRTCMP_lon_lwr_left: -102.3802487
-    WRTCMP_lat_lwr_left: 34.3407918
-    WRTCMP_dx: 3000.0
-    WRTCMP_dy: 3000.0
+    write_groups: "1"
+    write_tasks_per_group: 12
+    output_grid: "lambert_conformal"
+    cen_lon: -97.5
+    cen_lat: 38.5
+    stdlat1: 38.5
+    stdlat2: 38.5
+    nx: 301
+    ny: 301
+    lon1: -102.3802487
+    lat1: 34.3407918
+    dx: 3000.0
+    dy: 3000.0
 #
 #-----------------------------------------------------------------------
 #
@@ -423,36 +433,33 @@
 #
 "CONUS_25km_GFDLgrid":
   GRID_GEN_METHOD: "GFDLgrid"
-  GFDLgrid_LON_T6_CTR: -97.5
-  GFDLgrid_LAT_T6_CTR: 38.5
-  GFDLgrid_STRETCH_FAC: 1.4
-  GFDLgrid_NUM_CELLS: 96
-  GFDLgrid_REFINE_RATIO: 3
-  num_margin_cells_T6_left: 12
-  GFDLgrid_ISTART_OF_RGNL_DOM_ON_T6G: 13
-  num_margin_cells_T6_right: 12
-  GFDLgrid_IEND_OF_RGNL_DOM_ON_T6G: 84
-  num_margin_cells_T6_bottom: 16
-  GFDLgrid_JSTART_OF_RGNL_DOM_ON_T6G: 17
-  num_margin_cells_T6_top: 16
-  GFDLgrid_JEND_OF_RGNL_DOM_ON_T6G: 80
-  GFDLgrid_USE_NUM_CELLS_IN_FILENAMES: True
+  grid_settings:
+    lon_t6_ctr: -97.5
+    lat_t6_ctr: 38.5
+    stretch_factor: 1.4
+    num_cells: 96
+    refine_ratio: 3
+    istart_of_t7_on_t6g: 13
+    iend_of_t7_on_t6g: 84
+    jstart_of_t7_on_t6g: 17
+    jend_of_t7_on_t6g: 80
+  USE_NUM_CELLS_IN_FILENAMES: True
   DT_ATMOS: 225
   LAYOUT_X: 6
   LAYOUT_Y: 4
   BLOCKSIZE: 36
   QUILTING:
-    WRTCMP_write_groups: 1
-    WRTCMP_write_tasks_per_group: 4
-    WRTCMP_output_grid: "rotated_latlon"
-    WRTCMP_cen_lon: -97.5
-    WRTCMP_cen_lat: 38.5
-    WRTCMP_lon_lwr_left: -24.40085141
-    WRTCMP_lat_lwr_left: -19.65624142
-    WRTCMP_lon_upr_rght: 24.40085141
-    WRTCMP_lat_upr_rght: 19.65624142
-    WRTCMP_dlon: 0.22593381
-    WRTCMP_dlat: 0.22593381
+    write_groups: 1
+    write_tasks_per_group: 4
+    output_grid: "rotated_latlon"
+    cen_lon: -97.5
+    cen_lat: 38.5
+    lon1: -24.40085141
+    lat1: -19.65624142
+    lon2: 24.40085141
+    lat2: 19.65624142
+    dlon: 0.22593381
+    dlat: 0.22593381
 #
 #-----------------------------------------------------------------------
 #
@@ -466,36 +473,33 @@
 #
 "CONUS_3km_GFDLgrid":
   GRID_GEN_METHOD: "GFDLgrid"
-  GFDLgrid_LON_T6_CTR: -97.5
-  GFDLgrid_LAT_T6_CTR: 38.5
-  GFDLgrid_STRETCH_FAC: 1.5
-  GFDLgrid_NUM_CELLS: 768
-  GFDLgrid_REFINE_RATIO: 3
-  num_margin_cells_T6_left: 69
-  GFDLgrid_ISTART_OF_RGNL_DOM_ON_T6G: 70
-  num_margin_cells_T6_right: 69
-  GFDLgrid_IEND_OF_RGNL_DOM_ON_T6G: 699
-  num_margin_cells_T6_bottom: 164
-  GFDLgrid_JSTART_OF_RGNL_DOM_ON_T6G: 165
-  num_margin_cells_T6_top: 164
-  GFDLgrid_JEND_OF_RGNL_DOM_ON_T6G: 604
-  GFDLgrid_USE_NUM_CELLS_IN_FILENAMES: True
+  grid_settings:
+    lon_t6_ctr: -97.5
+    lat_t6_ctr: 38.5
+    stretch_factor: 1.5
+    num_cells: 768
+    refine_ratio: 3
+    istart_of_t7_on_t6g: 70
+    iend_of_t7_on_t6g: 699
+    jstart_of_t7_on_t6g: 165
+    jend_of_t7_on_t6g: 604
+  USE_NUM_CELLS_IN_FILENAMES: True
   DT_ATMOS: 36
   LAYOUT_X: 30
   LAYOUT_Y: 22
   BLOCKSIZE: 35
   QUILTING:
-    WRTCMP_write_groups: 1
-    WRTCMP_write_tasks_per_group: 22
-    WRTCMP_output_grid: "rotated_latlon"
-    WRTCMP_cen_lon: -97.5
-    WRTCMP_cen_lat: 38.5
-    WRTCMP_lon_lwr_left: -25.23144805
-    WRTCMP_lat_lwr_left: -15.82130419
-    WRTCMP_lon_upr_rght: 25.23144805
-    WRTCMP_lat_upr_rght: 15.82130419
-    WRTCMP_dlon: 0.02665763
-    WRTCMP_dlat: 0.02665763
+    write_groups: 1
+    write_tasks_per_group: 22
+    output_grid: "rotated_latlon"
+    cen_lon: -97.5
+    cen_lat: 38.5
+    lon1: -25.23144805
+    lat1: -15.82130419
+    lon2: 25.23144805
+    lat2: 15.82130419
+    dlon: 0.02665763
+    dlat: 0.02665763
 #
 #-----------------------------------------------------------------------
 #
@@ -518,19 +522,19 @@
   LAYOUT_Y: 11
   BLOCKSIZE: 2
   QUILTING:
-    WRTCMP_write_groups: 1
-    WRTCMP_write_tasks_per_group: 10
-    WRTCMP_output_grid: "lambert_conformal"
-    WRTCMP_cen_lon: -97.5
-    WRTCMP_cen_lat: 38.5
-    WRTCMP_stdlat1: 38.5
-    WRTCMP_stdlat2: 38.5
-    WRTCMP_nx: 191
-    WRTCMP_ny: 97
-    WRTCMP_lon_lwr_left: -120.72962370
-    WRTCMP_lat_lwr_left: 25.11648583
-    WRTCMP_dx: 25000.0
-    WRTCMP_dy: 25000.0
+    write_groups: 1
+    write_tasks_per_group: 10
+    output_grid: "lambert_conformal"
+    cen_lon: -97.5
+    cen_lat: 38.5
+    stdlat1: 38.5
+    stdlat2: 38.5
+    nx: 191
+    ny: 97
+    lon1: -120.72962370
+    lat1: 25.11648583
+    dx: 25000.0
+    dy: 25000.0
 #
 #-----------------------------------------------------------------------
 #
@@ -540,30 +544,31 @@
 #
 "AQM_NA_13km":
   GRID_GEN_METHOD: "ESGgrid"
-  ESGgrid_LON_CTR: -118.0
-  ESGgrid_LAT_CTR: 50.0
-  ESGgrid_DELX: 13000.0
-  ESGgrid_DELY: 13000.0
-  ESGgrid_NX: 800
-  ESGgrid_NY: 544
-  ESGgrid_PAZI: 0.0
-  ESGgrid_WIDE_HALO_WIDTH: 6
+  grid_settings:
+    lon_ctr: -118.0
+    lat_ctr: 50.0
+    delx: 13000.0
+    dely: 13000.0
+    nx: 800
+    ny: 544
+    pazi: 0.0
+    halo_width: 6
   DT_ATMOS: 180
   LAYOUT_X: 50
   LAYOUT_Y: 34
   BLOCKSIZE: 16
   QUILTING:
-    WRTCMP_write_groups: 2
-    WRTCMP_write_tasks_per_group: 46
-    WRTCMP_output_grid: "rotated_latlon"
-    WRTCMP_cen_lon: -118.0
-    WRTCMP_cen_lat: 50.0
-    WRTCMP_lon_lwr_left: -45.25
-    WRTCMP_lat_lwr_left: -28.5
-    WRTCMP_lon_upr_rght: 45.25
-    WRTCMP_lat_upr_rght: 28.5
-    WRTCMP_dlon: 0.116908139
-    WRTCMP_dlat: 0.116908139
+    write_groups: 2
+    write_tasks_per_group: 46
+    output_grid: "rotated_latlon"
+    cen_lon: -118.0
+    cen_lat: 50.0
+    lon1: -45.25
+    lat1: -28.5
+    lon2: 45.25
+    lat2: 28.5
+    dlon: 0.116908139
+    dlat: 0.116908139
 #
 #-----------------------------------------------------------------------
 #
@@ -573,30 +578,31 @@
 #
 "RRFS_NA_13km":
   GRID_GEN_METHOD: "ESGgrid"
-  ESGgrid_LON_CTR: -112.5
-  ESGgrid_LAT_CTR: 55.0
-  ESGgrid_DELX: 13000.0
-  ESGgrid_DELY: 13000.0
-  ESGgrid_NX: 912
-  ESGgrid_NY: 623
-  ESGgrid_PAZI: 0.0
-  ESGgrid_WIDE_HALO_WIDTH: 6
+  grid_settings:
+    lon_ctr: -112.5
+    lat_ctr: 55.0
+    delx: 13000.0
+    dely: 13000.0
+    nx: 912
+    ny: 623
+    pazi: 0.0
+    halo_width: 6
   DT_ATMOS: 75
   LAYOUT_X: 16
   LAYOUT_Y: 16
   BLOCKSIZE: 30
   QUILTING:
-    WRTCMP_write_groups: 1
-    WRTCMP_write_tasks_per_group: 16
-    WRTCMP_output_grid: "rotated_latlon"
-    WRTCMP_cen_lon: -113.0
-    WRTCMP_cen_lat: 55.0
-    WRTCMP_lon_lwr_left: -61.0
-    WRTCMP_lat_lwr_left: -37.0
-    WRTCMP_lon_upr_rght: 61.0
-    WRTCMP_lat_upr_rght: 37.0
-    WRTCMP_dlon: 0.1169081
-    WRTCMP_dlat: 0.1169081
+    write_groups: 1
+    write_tasks_per_group: 16
+    output_grid: "rotated_latlon"
+    cen_lon: -113.0
+    cen_lat: 55.0
+    lon1: -61.0
+    lat1: -37.0
+    lon2: 61.0
+    lat2: 37.0
+    dlon: 0.1169081
+    dlat: 0.1169081
 #
 #-----------------------------------------------------------------------
 #
@@ -606,28 +612,29 @@
 #
 "RRFS_NA_3km":
   GRID_GEN_METHOD: "ESGgrid"
-  ESGgrid_LON_CTR: -112.5
-  ESGgrid_LAT_CTR: 55.0
-  ESGgrid_DELX: 3000.0
-  ESGgrid_DELY: 3000.0
-  ESGgrid_NX: 3950
-  ESGgrid_NY: 2700
-  ESGgrid_PAZI: 0.0
-  ESGgrid_WIDE_HALO_WIDTH: 6
+  grid_settings:
+    lon_ctr: -112.5
+    lat_ctr: 55.0
+    delx: 3000.0
+    dely: 3000.0
+    nx: 3950
+    ny: 2700
+    pazi: 0.0
+    halo_width: 6
   DT_ATMOS: 36
   LAYOUT_X: 20   # 40 - EMC operational configuration
   LAYOUT_Y: 35   # 45 - EMC operational configuration
   BLOCKSIZE: 28
   QUILTING:
-    WRTCMP_write_groups: 1
-    WRTCMP_write_tasks_per_group: 144
-    WRTCMP_output_grid: "rotated_latlon"
-    WRTCMP_cen_lon: -113.0
-    WRTCMP_cen_lat: 55.0
-    WRTCMP_lon_lwr_left: -61.0
-    WRTCMP_lat_lwr_left: -37.0
-    WRTCMP_lon_upr_rght: 61.0
-    WRTCMP_lat_upr_rght: 37.0
-    WRTCMP_dlon: 0.025
-    WRTCMP_dlat: 0.025
+    write_groups: 1
+    write_tasks_per_group: 144
+    output_grid: "rotated_latlon"
+    cen_lon: -113.0
+    cen_lat: 55.0
+    lon1: -61.0
+    lat1: -37.0
+    lon2: 61.0
+    lat2: 37.0
+    dlon: 0.025
+    dlat: 0.025
 
