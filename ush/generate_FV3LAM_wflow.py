@@ -16,9 +16,6 @@ from stat import S_IXUSR
 from string import Template
 from textwrap import dedent
 
-from uwtools.api.config import get_nml_config, get_yaml_config, realize
-from uwtools.api.template import render
-
 from python_utils import (
     list_to_str,
     log_info,
@@ -34,10 +31,14 @@ from python_utils import (
     flatten_dict,
 )
 
+from check_python_version import check_python_version
+from get_crontab_contents import add_crontab_line
 from setup import setup
 from set_fv3nml_sfc_climo_filenames import set_fv3nml_sfc_climo_filenames
-from get_crontab_contents import add_crontab_line
-from check_python_version import check_python_version
+
+from uwtools.api.config import get_nml_config, get_yaml_config, realize
+from uwtools.api.template import render
+
 
 # pylint: disable=too-many-locals,too-many-branches, too-many-statements
 def generate_FV3LAM_wflow(
@@ -513,8 +514,8 @@ def generate_FV3LAM_wflow(
 
     physics_cfg = get_yaml_config(FV3_NML_YAML_CONFIG_FP)
     base_namelist = get_nml_config(FV3_NML_BASE_SUITE_FP)
-    base_namelist.update_values(physics_cfg[CCPP_PHYS_SUITE])
-    base_namelist.update_values(settings)
+    base_namelist.update_from(physics_cfg[CCPP_PHYS_SUITE])
+    base_namelist.update_from(settings)
     for sect, values in base_namelist.copy().items():
         if not values:
             del base_namelist[sect]
