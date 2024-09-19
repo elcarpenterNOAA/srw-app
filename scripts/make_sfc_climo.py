@@ -2,16 +2,13 @@
 The run script for SfcClimoGen
 """
 
-import datetime as dt
 import glob
 import os
-import re
 import sys
 from argparse import ArgumentParser
-from copy import deepcopy
 from pathlib import Path
 
-from uwtools.api.file import link as uwlink
+from uwtools.api.fs import link as uwlink
 from uwtools.api.sfc_climo_gen import SfcClimoGen 
 from uwtools.api.config import get_yaml_config
 
