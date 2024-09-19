@@ -13,6 +13,36 @@ from uwtools.api.sfc_climo_gen import SfcClimoGen
 from uwtools.api.config import get_yaml_config
 
 
+def link_files(dest_dir, files):
+    """
+    Link a given list of files to the destination directory using the same file names.
+    """
+    for fpath in files:
+        path = Path(fpath)
+        fn = Path(fpath).name
+    
+        if "halo" in fn:
+            fn = f"{CRES}.{(fn.replace('halo', 'halo4'))}"
+            no_halo_fn = fn.replace("halo4.", "")
+            for link in (fn, no_halo_fn):
+                link = Path(link)
+                if (linkname := fix_lam_path / link.name).is_symlink():
+                    linkname.unlink()
+                linkname.symlink_to(path)
+    
+        else:
+            bn = fn.split(".nc")[0]
+            fn = f"{CRES}.{bn}.halo0.nc"
+            tile1_fn = fn.replace("tile7.halo0", "tile1")
+            for link in (fn, tile1_fn):
+                link = Path(link)
+                if (linkname := fix_lam_path / link.name).is_symlink():
+                    linkname.unlink()
+                linkname.symlink_to(path)
+    
+    Path(rundir / "make_sfc_climo_task_complete.txt").touch()
+
+
 parser = ArgumentParser(
     description="Script that runs SfcClimoGen via uwtools API",
 )
@@ -61,27 +91,9 @@ if not (rundir / "runscript.sfc_climo_gen.done").is_file():
 # Deliver output data
 
 fix_lam_path = Path(expt_config["workflow"]["FIXlam"])
-for fpath in glob.glob(str(rundir / f"*.nc")):
-    path = Path(fpath)
-    fn = Path(fpath).name
-
-    if "halo" in fn:
-        fn = f"{CRES}.{(fn.replace('halo', 'halo4'))}"
-        no_halo_fn = fn.replace("halo4.", "")
-        for link in (fn, no_halo_fn):
-            link = Path(link)
-            if (linkname := fix_lam_path / link.name).is_symlink():
-                linkname.unlink()
-            linkname.symlink_to(path)
-
-    else:
-        bn = fn.split(".nc")[0]
-        fn = f"{CRES}.{bn}.halo0.nc"
-        tile1_fn = fn.replace("tile7.halo0", "tile1")
-        for link in (fn, tile1_fn):
-            link = Path(link)
-            if (linkname := fix_lam_path / link.name).is_symlink():
-                linkname.unlink()
-            linkname.symlink_to(path)
+link_files(
+    dest_dir=fix_lam_path,
+    files=glob.glob(str(rundir / f"*.nc")),
+)
 
 Path(rundir / "make_sfc_climo_task_complete.txt").touch()
