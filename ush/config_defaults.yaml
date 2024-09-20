@@ -1494,7 +1494,7 @@ task_make_sfc_climo:
           maximum_snow_albedo_method: "bilinear"
           snowfree_albedo_method: "bilinear"
           vegetation_greenness_method: "bilinear"
-    rundir: '{{ workflow.EXPTDIR/sfc_climo'
+    rundir: '{{ workflow.EXPTDIR }}/sfc_climo'
   platform:
     account: "{{ user.ACCOUNT }}"
     scheduler: "{{ platform.SCHED }}"
