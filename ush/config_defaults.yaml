@@ -1469,11 +1469,11 @@ task_make_sfc_climo:
         nodes: 1
         tasks_per_node: 24
         stdout: "{{ user.HOMEdir }}/scripts"
-        walltime: 00:02:00
+        walltime: 00:05:00
       envcmds:
         - module use {{ user.HOMEdir }}/modulefiles
         - module load build_{{ user.MACHINE|lower() }}_{{ workflow.COMPILER }}
-      executable: "{{ user.EXECdir }}/sfc_climo_gen OR {{ user.HOMEdir }}/{{ workflow.EXEC_SUBDIR }}/sfc_climo_gen"
+      executable: "{{ user.EXECdir }}/sfc_climo_gen"
       mpicmd: '{{ platform.BATCH_RUN_CMD }}'
     namelist:
       update_values:
@@ -1494,7 +1494,7 @@ task_make_sfc_climo:
           maximum_snow_albedo_method: "bilinear"
           snowfree_albedo_method: "bilinear"
           vegetation_greenness_method: "bilinear"
-    rundir: '{{ workflow.EXPTDIR + "/sfc_climo" if rocoto.tasks.get("task_make_sfc_climo") else "" }}'
+    rundir: '{{ workflow.EXPTDIR/sfc_climo'
   platform:
     account: "{{ user.ACCOUNT }}"
     scheduler: "{{ platform.SCHED }}"
