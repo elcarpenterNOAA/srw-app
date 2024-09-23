@@ -1330,7 +1330,7 @@ task_make_grid:
 
   # ELC: these are esg grid params, not gfdl grid params
   user_defined_grid:
-    esggrid:
+    ESGgrid:
       lon_ctr: ""
       lat_ctr: ""
       delx: ""
@@ -1339,17 +1339,18 @@ task_make_grid:
       ny: ""
       halo_width: ""
       pazi: ""
-    gfdlgrid:
-      lon_of_t6_ctr: ""
-      GFDLgrid_LAT_T6_CTR: ""
-      GFDLgrid_NUM_CELLS: ""
-      GFDLgrid_STRETCH_FAC: ""
-      GFDLgrid_REFINE_RATIO: ""
-      GFDLgrid_ISTART_OF_RGNL_DOM_ON_T6G: ""
-      GFDLgrid_IEND_OF_RGNL_DOM_ON_T6G: ""
-      GFDLgrid_JSTART_OF_RGNL_DOM_ON_T6G: ""
-      GFDLgrid_JEND_OF_RGNL_DOM_ON_T6G: ""
-      GFDLgrid_USE_NUM_CELLS_IN_FILENAMES: ""
+    GFDLgrid:
+      lon_t6_ctr: ""
+      lat_t6_ctr: ""
+      stretch_factor: ""
+      num_cells: ""
+      refine_ratio: ""
+      istart_of_t7_on_t6g: ""
+      iend_of_t7_on_t6g: ""
+      jstart_of_t7_on_t6g: ""
+      jend_of_t7_on_t6g: ""
+
+  USE_NUM_CELLS_IN_FILENAMES: ""
 
   #-----------------------------------------------------------------------
   #
@@ -1950,83 +1951,83 @@ task_run_fcst:
   # in the model configuration file "model_configure" in the forecast's  
   # run directory).
   # 
-  # WRTCMP_write_groups:
+  # write_groups:
   # The number of write groups (i.e. groups of MPI tasks) to use in the
   # write component.
   #
-  # WRTCMP_write_tasks_per_group:
+  # write_tasks_per_group:
   # The number of MPI tasks to allocate for each write group.
   #
-  # WRTCMP_output_grid:
+  # output_grid:
   # Sets the type (coordinate system) of the write component grid. The 
   # default empty string forces the user to set a valid value for 
-  # WRTCMP_output_grid in config.yaml if specifying a *custom* grid. When 
+  # output_grid in config.yaml if specifying a *custom* grid. When 
   # creating an experiment with a user-defined grid, this parameter must 
   # be specified or the experiment will fail. 
   #
-  # WRTCMP_cen_lon:
+  # cen_lon:
   # Longitude (in degrees) of the center of the write component grid. Can 
   # usually be set to the corresponding value from the native grid.
   #
-  # WRTCMP_cen_lat:
+  # cen_lat:
   # Latitude (in degrees) of the center of the write component grid. Can 
   # usually be set to the corresponding value from the native grid.
   #
-  # WRTCMP_lon_lwr_left:
+  # lon_lwr_left:
   # Longitude (in degrees) of the center of the lower-left (southwest) 
   # cell on the write component grid. If using the "rotated_latlon" 
   # coordinate system, this is expressed in terms of the rotated longitude. 
   # Must be set manually when running an experiment with a user-defined grid.
   #
-  # WRTCMP_lat_lwr_left:
+  # lat_lwr_left:
   # Latitude (in degrees) of the center of the lower-left (southwest) cell 
   # on the write component grid. If using the "rotated_latlon" coordinate 
   # system, this is expressed in terms of the rotated latitude. Must be set 
   # manually when running an experiment with a user-defined grid.
   # 
   # -----------------------------------------------------------------------
-  # Parameters to set when WRTCMP_output_grid is set to "rotated_latlon":
+  # Parameters to set when output_grid is set to "rotated_latlon":
   #
-  # WRTCMP_lon_upr_rght:
+  # lon_upr_rght:
   # Longitude (in degrees) of the center of the upper-right (northeast) cell 
   # on the write component grid (expressed in terms of the rotated longitude).
   #
-  # WRTCMP_lat_upr_rght:
+  # lat_upr_rght:
   # Latitude (in degrees) of the center of the upper-right (northeast) cell 
   # on the write component grid (expressed in terms of the rotated latitude).
   #
-  # WRTCMP_dlon:
+  # dlon:
   # Size (in degrees) of a grid cell on the write component grid (expressed 
   # in terms of the rotated longitude).
   #
-  # WRTCMP_dlat:
+  # dlat:
   # Size (in degrees) of a grid cell on the write component grid (expressed 
   # in terms of the rotated latitude).
   #
   # -----------------------------------------------------------------------
-  # Parameters to set when WRTCMP_output_grid is set to "lambert_conformal"
+  # Parameters to set when output_grid is set to "lambert_conformal"
   # 
-  # WRTCMP_stdlat1:
+  # stdlat1:
   # First standard latitude (in degrees) in definition of Lambert conformal 
   # projection.
   #
-  # WRTCMP_stdlat2:
+  # stdlat2:
   # Second standard latitude (in degrees) in definition of Lambert conformal 
   # projection.
   #
-  # WRTCMP_nx:
+  # nx:
   # Number of grid points in the x-coordinate of the Lambert conformal 
   # projection.
   #
-  # WRTCMP_ny:
+  # ny:
   # Number of grid points in the y-coordinate of the Lambert conformal 
   # projection.
   #
-  # WRTCMP_dx:
+  # dx:
   # Grid cell size (in meters) along the x-axis of the Lambert conformal 
   # projection.
   #
-  # WRTCMP_dy:
+  # dy:
   # Grid cell size (in meters) along the y-axis of the Lambert conformal 
   # projection. 
   #
@@ -2035,34 +2036,34 @@ task_run_fcst:
   QUILTING: true
   PRINT_ESMF: false
 
-  PE_MEMBER01: '{{ task_run_fcst.LAYOUT_Y * task_run_fcst.LAYOUT_X + task_run_fcst.WRTCMP_write_groups * task_run_fcst.WRTCMP_write_tasks_per_group if task_run_fcst.QUILTING else task_run_fcst.LAYOUT_Y * task_run_fcst.LAYOUT_X}}'
+  PE_MEMBER01: '{{ task_run_fcst.LAYOUT_Y * task_run_fcst.LAYOUT_X + task_run_fcst.write_groups * task_run_fcst.write_tasks_per_group if task_run_fcst.QUILTING else task_run_fcst.LAYOUT_Y * task_run_fcst.LAYOUT_X}}'
   
-  WRTCMP_write_groups: ""
-  WRTCMP_write_tasks_per_group: ""
+  write_groups: ""
+  write_tasks_per_group: ""
   
-  WRTCMP_output_grid: "''"
-  WRTCMP_cen_lon: ""
-  WRTCMP_cen_lat: ""
-  WRTCMP_lon_lwr_left: ""
-  WRTCMP_lat_lwr_left: ""
+  output_grid: "''"
+  cen_lon: ""
+  cen_lat: ""
+  lon_lwr_left: ""
+  lat_lwr_left: ""
   #
-  # The following are used only for the case of WRTCMP_output_grid set to
+  # The following are used only for the case of output_grid set to
   # "'rotated_latlon'".
   #
-  WRTCMP_lon_upr_rght: ""
-  WRTCMP_lat_upr_rght: ""
-  WRTCMP_dlon: ""
-  WRTCMP_dlat: ""
+  lon_upr_rght: ""
+  lat_upr_rght: ""
+  dlon: ""
+  dlat: ""
   #
-  # The following are used only for the case of WRTCMP_output_grid set to
+  # The following are used only for the case of output_grid set to
   # "'lambert_conformal'".
   #
-  WRTCMP_stdlat1: ""
-  WRTCMP_stdlat2: ""
-  WRTCMP_nx: ""
-  WRTCMP_ny: ""
-  WRTCMP_dx: ""
-  WRTCMP_dy: ""
+  stdlat1: ""
+  stdlat2: ""
+  nx: ""
+  ny: ""
+  dx: ""
+  dy: ""
   #
   #-----------------------------------------------------------------------
   #

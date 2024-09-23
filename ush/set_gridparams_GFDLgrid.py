@@ -28,13 +28,13 @@ def prime_factors(n):
 
 
 def set_gridparams_GFDLgrid(
-    lon_of_t6_ctr,
-    lat_of_t6_ctr,
-    res_of_t6g,
+    lon_t6_ctr,
+    lat_t6_ctr,
+    num_cells,
     stretch_factor,
-    refine_ratio_t6g_to_t7g,
+    refine_ratio,
     istart_of_t7_on_t6g,
-    iend_of_t7_on_t6g,
+    end_of_t7_on_t6g,
     jstart_of_t7_on_t6g,
     jend_of_t7_on_t6g,
     verbose,
@@ -45,11 +45,11 @@ def set_gridparams_GFDLgrid(
     grid generation method (i.e. GRID_GEN_METHOD set to "ESGgrid").
 
     Args:
-         lon_of_t6_ctr
-         lat_of_t6_ctr
-         res_of_t6g
+         lon_t6_ctr
+         lat_t6_ctr
+         num_cells
          stretch_factor
-         refine_ratio_t6g_to_t7g
+         refine_ratio
          istart_of_t7_on_t6g
          iend_of_t7_on_t6g
          jstart_of_t7_on_t6g
@@ -83,8 +83,8 @@ def set_gridparams_GFDLgrid(
     # -----------------------------------------------------------------------
     #
 
-    nx_of_t6_on_t6g = res_of_t6g
-    ny_of_t6_on_t6g = res_of_t6g
+    nx_of_t6_on_t6g = num_cells
+    ny_of_t6_on_t6g = num_cells
 
     num_left_margin_cells_on_t6g = istart_of_t7_on_t6g - 1
     num_right_margin_cells_on_t6g = nx_of_t6_on_t6g - iend_of_t7_on_t6g
@@ -138,8 +138,8 @@ def set_gridparams_GFDLgrid(
                 Please reset jstart_of_t7_on_t6g and jend_of_t7_on_t6g and rerun."""
             )
 
-    lon_of_t7_ctr = lon_of_t6_ctr
-    lat_of_t7_ctr = lat_of_t6_ctr
+    lon_t7_ctr = lon_t6_ctr
+    lat_t7_ctr = lat_t6_ctr
     #
     # -----------------------------------------------------------------------
     #
@@ -218,12 +218,12 @@ def set_gridparams_GFDLgrid(
     # cells on the tile 6 grid -- which we denote by halo_width_on_t6g -- we simply di-
     # vide halo_width_on_t7g by the refinement ratio, i.e.
     #
-    #   halo_width_on_t6g = halo_width_on_t7g/refine_ratio_t6g_to_t7g
+    #   halo_width_on_t6g = halo_width_on_t7g/refine_ratio
     #
     # The corresponding halo width on the tile 6 supergrid is then given by
     #
     #   halo_width_on_t6sg = 2*halo_width_on_t6g
-    #                      = 2*halo_width_on_t7g/refine_ratio_t6g_to_t7g
+    #                      = 2*halo_width_on_t7g/refine_ratio
     #
     # Note that halo_width_on_t6sg must be an integer, but the expression for it de-
     # rived above may not yield an integer.  To ensure that the halo has a
@@ -231,7 +231,7 @@ def set_gridparams_GFDLgrid(
     # result of the expression above for halo_width_on_t6sg, i.e. we redefine halo_width_on_t6sg
     # to be
     #
-    #   halo_width_on_t6sg = ceil(2*halo_width_on_t7g/refine_ratio_t6g_to_t7g)
+    #   halo_width_on_t6sg = ceil(2*halo_width_on_t7g/refine_ratio)
     #
     # where ceil(...) is the ceiling function, i.e. it rounds its floating
     # point argument up to the next larger integer.  Since in bash division
@@ -240,7 +240,7 @@ def set_gridparams_GFDLgrid(
     # adding the denominator (of the argument of ceil(...) above) minus 1 to
     # the original numerator, i.e. by redefining halo_width_on_t6sg to be
     #
-    #   halo_width_on_t6sg = (2*halo_width_on_t7g + refine_ratio_t6g_to_t7g - 1)/refine_ratio_t6g_to_t7g
+    #   halo_width_on_t6sg = (2*halo_width_on_t7g + refine_ratio - 1)/refine_ratio
     #
     # This trick works when dividing one positive integer by another.
     #
@@ -258,8 +258,8 @@ def set_gridparams_GFDLgrid(
     #
     halo_width_on_t7g = nh4 + 1
     halo_width_on_t6sg = (
-        2 * halo_width_on_t7g + refine_ratio_t6g_to_t7g - 1
-    ) / refine_ratio_t6g_to_t7g
+        2 * halo_width_on_t7g + refine_ratio - 1
+    ) / refine_ratio
     #
     # -----------------------------------------------------------------------
     #
@@ -336,7 +336,7 @@ def set_gridparams_GFDLgrid(
 
     halo_width_on_t6sg = istart_of_t7_on_t6sg - istart_of_t7_with_halo_on_t6sg
     halo_width_on_t6g = halo_width_on_t6sg // 2
-    halo_width_on_t7g = int(halo_width_on_t6g * refine_ratio_t6g_to_t7g)
+    halo_width_on_t7g = int(halo_width_on_t6g * refine_ratio)
 
     logging.debug(
         f"""
@@ -358,11 +358,11 @@ def set_gridparams_GFDLgrid(
     #
     nx_of_t7_on_t6sg = iend_of_t7_on_t6sg - istart_of_t7_on_t6sg + 1
     nx_of_t7_on_t6g = nx_of_t7_on_t6sg / 2
-    nx_of_t7_on_t7g = int(nx_of_t7_on_t6g * refine_ratio_t6g_to_t7g)
+    nx_of_t7_on_t7g = int(nx_of_t7_on_t6g * refine_ratio)
 
     ny_of_t7_on_t6sg = jend_of_t7_on_t6sg - jstart_of_t7_on_t6sg + 1
     ny_of_t7_on_t6g = ny_of_t7_on_t6sg / 2
-    ny_of_t7_on_t7g = int(ny_of_t7_on_t6g * refine_ratio_t6g_to_t7g)
+    ny_of_t7_on_t7g = int(ny_of_t7_on_t6g * refine_ratio)
     #
     # The following are set only for informational purposes.
     #
@@ -405,7 +405,7 @@ def set_gridparams_GFDLgrid(
 
         The refinement ratio (ratio of the number of cells in tile 7 that abut
         a single cell in tile 6) is:
-          refine_ratio_t6g_to_t7g = {refine_ratio_t6g_to_t7g}
+          refine_ratio = {refine_ratio}
 
         The number of cells in the two horizontal directions on the regional do-
         main's (i.e. tile 7's) grid WITHOUT A HALO are:
@@ -431,13 +431,13 @@ def set_gridparams_GFDLgrid(
         iend_of_t7_with_halo_on_t6sg - istart_of_t7_with_halo_on_t6sg + 1
     )
     nx_of_t7_with_halo_on_t6g = nx_of_t7_with_halo_on_t6sg / 2
-    nx_of_t7_with_halo_on_t7g = nx_of_t7_with_halo_on_t6g * refine_ratio_t6g_to_t7g
+    nx_of_t7_with_halo_on_t7g = nx_of_t7_with_halo_on_t6g * refine_ratio
 
     ny_of_t7_with_halo_on_t6sg = (
         jend_of_t7_with_halo_on_t6sg - jstart_of_t7_with_halo_on_t6sg + 1
     )
     ny_of_t7_with_halo_on_t6g = ny_of_t7_with_halo_on_t6sg / 2
-    ny_of_t7_with_halo_on_t7g = ny_of_t7_with_halo_on_t6g * refine_ratio_t6g_to_t7g
+    ny_of_t7_with_halo_on_t7g = ny_of_t7_with_halo_on_t6g * refine_ratio
 
     logging.debug(
         f"""

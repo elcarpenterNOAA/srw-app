@@ -12,7 +12,7 @@
 # 1) Reset the experiment title (expt_title).
 # 2) Reset the grid parameters.
 # 3) If the write component is to be used (i.e. QUILTING is set to
-#    "TRUE") and the variable WRTCMP_PARAMS_TMPL_FN containing the name
+#    "TRUE") and the variable PARAMS_TMPL_FN containing the name
 #    of the write-component template file is unset or empty, set that
 #    filename variable to the appropriate preexisting template file.
 #
@@ -52,21 +52,23 @@
 #-----------------------------------------------------------------------
 #
 "RRFS_CONUS_25km":
-  GRID_GEN_METHOD: "ESGgrid"
-  grid_settings:
-    lon_ctr: -97.5
-    lat_ctr: 38.5
-    delx: 25000.0
-    dely: 25000.0
-    nx: 219
-    ny: 131
-    pazi: 0.0
-    halo_width: 6
-  DT_ATMOS: 150
-  LAYOUT_X: 5
-  LAYOUT_Y: 2
-  BLOCKSIZE: 40
-  QUILTING:
+  workflow:
+    GRID_GEN_METHOD: "ESGgrid"
+  task_make_grid:
+    grid_settings:
+      lon_ctr: -97.5
+      lat_ctr: 38.5
+      delx: 25000.0
+      dely: 25000.0
+      nx: 219
+      ny: 131
+      pazi: 0.0
+      halo_width: 6
+  task_run_fcst:
+    DT_ATMOS: 150
+    LAYOUT_X: 5
+    LAYOUT_Y: 2
+    BLOCKSIZE: 40
     write_groups: 1
     write_tasks_per_group: 2
     cen_lon: -97.5
@@ -88,21 +90,23 @@
 #-----------------------------------------------------------------------
 #
 "RRFS_CONUScompact_25km":
-  GRID_GEN_METHOD: "ESGgrid"
-  grid_settings:
-    lon_ctr: -97.5
-    lat_ctr: 38.5
-    delx: 25000.0
-    dely: 25000.0
-    nx: 202
-    ny: 116
-    pazi: 0.0
-    halo_width: 6
-  DT_ATMOS: 180
-  LAYOUT_X: 5
-  LAYOUT_Y: 2
-  BLOCKSIZE: 40
-  QUILTING:
+  workflow:
+    GRID_GEN_METHOD: "ESGgrid"
+  task_make_grid:
+    grid_settings:
+      lon_ctr: -97.5
+      lat_ctr: 38.5
+      delx: 25000.0
+      dely: 25000.0
+      nx: 202
+      ny: 116
+      pazi: 0.0
+      halo_width: 6
+  task_run_fcst:
+    DT_ATMOS: 180
+    LAYOUT_X: 5
+    LAYOUT_Y: 2
+    BLOCKSIZE: 40
     write_groups: 1
     write_tasks_per_group: 2
     output_grid: "lambert_conformal"
@@ -124,21 +128,23 @@
 #-----------------------------------------------------------------------
 #
 "RRFS_CONUS_13km":
-  GRID_GEN_METHOD: "ESGgrid"
-  grid_settings:
-    lon_ctr: -97.5
-    lat_ctr: 38.5
-    delx: 13000.0
-    dely: 13000.0
-    nx: 420
-    ny: 252
-    pazi: 0.0
-    halo_width: 6
-  DT_ATMOS: 75
-  LAYOUT_X: 16
-  LAYOUT_Y: 10
-  BLOCKSIZE: 32
-  QUILTING:
+  workflow:
+    GRID_GEN_METHOD: "ESGgrid"
+  task_make_grid:
+    grid_settings:
+      lon_ctr: -97.5
+      lat_ctr: 38.5
+      delx: 13000.0
+      dely: 13000.0
+      nx: 420
+      ny: 252
+      pazi: 0.0
+      halo_width: 6
+  task_run_fcst:
+    DT_ATMOS: 75
+    LAYOUT_X: 16
+    LAYOUT_Y: 10
+    BLOCKSIZE: 32
     write_groups: 1
     write_tasks_per_group: 10
     output_grid: "lambert_conformal"
@@ -160,21 +166,23 @@
 #-----------------------------------------------------------------------
 #
 "RRFS_CONUScompact_13km":
-  GRID_GEN_METHOD: "ESGgrid"
-  grid_settings:
-    lon_ctr: -97.5
-    lat_ctr: 38.5
-    delx: 13000.0
-    dely: 13000.0
-    nx: 396
-    ny: 232
-    pazi: 0.0
-    halo_width: 6
-  DT_ATMOS: 75
-  LAYOUT_X: 16
-  LAYOUT_Y: 10
-  BLOCKSIZE: 32
-  QUILTING:
+  workflow:
+    GRID_GEN_METHOD: "ESGgrid"
+  task_make_grid:
+    grid_settings:
+      lon_ctr: -97.5
+      lat_ctr: 38.5
+      delx: 13000.0
+      dely: 13000.0
+      nx: 396
+      ny: 232
+      pazi: 0.0
+      halo_width: 6
+  task_run_fcst:
+    DT_ATMOS: 75
+    LAYOUT_X: 16
+    LAYOUT_Y: 10
+    BLOCKSIZE: 32
     write_groups: 1
     write_tasks_per_group: 16
     output_grid: "lambert_conformal"
@@ -196,21 +204,23 @@
 #-----------------------------------------------------------------------
 #
 "RRFS_CONUS_3km":
-  GRID_GEN_METHOD: "ESGgrid"
-  grid_settings:
-    lon_ctr: -97.5
-    lat_ctr: 38.5
-    delx: 3000.0
-    dely: 3000.0
-    nx: 1820
-    ny: 1092
-    pazi: 0.0
-    halo_width: 6
-  DT_ATMOS: 36
-  LAYOUT_X: 28
-  LAYOUT_Y: 28
-  BLOCKSIZE: 28
-  QUILTING:
+  workflow:
+    GRID_GEN_METHOD: "ESGgrid"
+  task_make_grid:
+    grid_settings:
+      lon_ctr: -97.5
+      lat_ctr: 38.5
+      delx: 3000.0
+      dely: 3000.0
+      nx: 1820
+      ny: 1092
+      pazi: 0.0
+      halo_width: 6
+  task_run_fcst:
+    DT_ATMOS: 36
+    LAYOUT_X: 28
+    LAYOUT_Y: 28
+    BLOCKSIZE: 28
     write_groups: 1
     write_tasks_per_group: 28
     output_grid: "lambert_conformal"
@@ -232,21 +242,23 @@
 #-----------------------------------------------------------------------
 #
 "RRFS_CONUScompact_3km":
-  GRID_GEN_METHOD: "ESGgrid"
-  grid_settings:
-    lon_ctr: -97.5
-    lat_ctr: 38.5
-    delx: 3000.0
-    dely: 3000.0
-    nx: 1748
-    ny: 1038
-    pazi: 0.0
-    halo_width: 6
-  DT_ATMOS: 36
-  LAYOUT_X: 30
-  LAYOUT_Y: 16
-  BLOCKSIZE: 32
-  QUILTING:
+  workflow:
+    GRID_GEN_METHOD: "ESGgrid"
+  task_make_grid:
+    grid_settings:
+      lon_ctr: -97.5
+      lat_ctr: 38.5
+      delx: 3000.0
+      dely: 3000.0
+      nx: 1748
+      ny: 1038
+      pazi: 0.0
+      halo_width: 6
+  task_run_fcst:
+    DT_ATMOS: 36
+    LAYOUT_X: 30
+    LAYOUT_Y: 16
+    BLOCKSIZE: 32
     write_groups: 1
     write_tasks_per_group: 16
     output_grid: "lambert_conformal"
@@ -270,21 +282,23 @@
 #-----------------------------------------------------------------------
 #
 "SUBCONUS_Ind_3km":
-  GRID_GEN_METHOD: "ESGgrid"
-  grid_settings:
-    lon_ctr: -86.16
-    lat_ctr: 39.77
-    delx: 3000.0
-    dely: 3000.0
-    nx: 200
-    ny: 200
-    pazi: 0.0
-    halo_width: 6
-  DT_ATMOS: 36
-  LAYOUT_X: 5
-  LAYOUT_Y: 5
-  BLOCKSIZE: 40
-  QUILTING:
+  workflow:
+    GRID_GEN_METHOD: "ESGgrid"
+  task_make_grid:
+    grid_settings:
+      lon_ctr: -86.16
+      lat_ctr: 39.77
+      delx: 3000.0
+      dely: 3000.0
+      nx: 200
+      ny: 200
+      pazi: 0.0
+      halo_width: 6
+  task_run_fcst:
+    DT_ATMOS: 36
+    LAYOUT_X: 5
+    LAYOUT_Y: 5
+    BLOCKSIZE: 40
     write_groups: 1
     write_tasks_per_group: 5
     output_grid: "lambert_conformal"
@@ -309,21 +323,23 @@
 #-----------------------------------------------------------------------
 #
 "RRFS_AK_13km":
-  GRID_GEN_METHOD: "ESGgrid"
-  grid_settings:
-    lon_ctr: -161.5
-    lat_ctr: 63.0
-    delx: 13000.0
-    dely: 13000.0
-    nx: 320
-    ny: 240
-    pazi: 0.0
-    halo_width: 6
-  DT_ATMOS: 10
-  LAYOUT_X: 16
-  LAYOUT_Y: 12
-  BLOCKSIZE: 40
-  QUILTING:
+  workflow:
+    GRID_GEN_METHOD: "ESGgrid"
+  task_make_grid:
+    grid_settings:
+      lon_ctr: -161.5
+      lat_ctr: 63.0
+      delx: 13000.0
+      dely: 13000.0
+      nx: 320
+      ny: 240
+      pazi: 0.0
+      halo_width: 6
+  task_run_fcst:
+    DT_ATMOS: 10
+    LAYOUT_X: 16
+    LAYOUT_Y: 12
+    BLOCKSIZE: 40
     write_groups: 1
     write_tasks_per_group: 12
     output_grid: "lambert_conformal"
@@ -348,21 +364,23 @@
 #-----------------------------------------------------------------------
 #
 "RRFS_AK_3km":
-  GRID_GEN_METHOD: "ESGgrid"
-  grid_settings:
-    lon_ctr: -161.5
-    lat_ctr: 63.0
-    delx: 3000.0
-    dely: 3000.0
-    nx: 1380
-    ny: 1020
-    pazi: 0.0
-    halo_width: 6
-  DT_ATMOS: 30
-  LAYOUT_X: 30
-  LAYOUT_Y: 17
-  BLOCKSIZE: 40
-  QUILTING:
+  workflow:
+    GRID_GEN_METHOD: "ESGgrid"
+  task_make_grid:
+    grid_settings:
+      lon_ctr: -161.5
+      lat_ctr: 63.0
+      delx: 3000.0
+      dely: 3000.0
+      nx: 1380
+      ny: 1020
+      pazi: 0.0
+      halo_width: 6
+  task_run_fcst:
+    DT_ATMOS: 30
+    LAYOUT_X: 30
+    LAYOUT_Y: 17
+    BLOCKSIZE: 40
     write_groups: 1
     write_tasks_per_group: 17
     output_grid: "lambert_conformal"
@@ -392,21 +410,23 @@
 #-----------------------------------------------------------------------
 #
 "WoFS_3km":
-  GRID_GEN_METHOD: "ESGgrid"
-  grid_settings:
-    lon_ctr: -97.5
-    lat_ctr: 38.5
-    delx: 3000.0
-    dely: 3000.0
-    nx: 361
-    ny: 361
-    pazi: 0.0
-    halo_width: 6
-  DT_ATMOS: 20
-  LAYOUT_X: 18
-  LAYOUT_Y: 12
-  BLOCKSIZE: 30
-  QUILTING:
+  workflow:
+    GRID_GEN_METHOD: "ESGgrid"
+  task_make_grid:
+    grid_settings:
+      lon_ctr: -97.5
+      lat_ctr: 38.5
+      delx: 3000.0
+      dely: 3000.0
+      nx: 361
+      ny: 361
+      pazi: 0.0
+      halo_width: 6
+  task_run_fcst:
+    DT_ATMOS: 20
+    LAYOUT_X: 18
+    LAYOUT_Y: 12
+    BLOCKSIZE: 30
     write_groups: "1"
     write_tasks_per_group: 12
     output_grid: "lambert_conformal"
@@ -432,23 +452,25 @@
 #-----------------------------------------------------------------------
 #
 "CONUS_25km_GFDLgrid":
-  GRID_GEN_METHOD: "GFDLgrid"
-  grid_settings:
-    lon_t6_ctr: -97.5
-    lat_t6_ctr: 38.5
-    stretch_factor: 1.4
-    num_cells: 96
-    refine_ratio: 3
-    istart_of_t7_on_t6g: 13
-    iend_of_t7_on_t6g: 84
-    jstart_of_t7_on_t6g: 17
-    jend_of_t7_on_t6g: 80
-  USE_NUM_CELLS_IN_FILENAMES: True
-  DT_ATMOS: 225
-  LAYOUT_X: 6
-  LAYOUT_Y: 4
-  BLOCKSIZE: 36
-  QUILTING:
+  workflow:
+    GRID_GEN_METHOD: "GFDLgrid"
+  task_make_grid:
+    grid_settings:
+      lon_t6_ctr: -97.5
+      lat_t6_ctr: 38.5
+      stretch_factor: 1.4
+      num_cells: 96
+      refine_ratio: 3
+      istart_of_t7_on_t6g: 13
+      iend_of_t7_on_t6g: 84
+      jstart_of_t7_on_t6g: 17
+      jend_of_t7_on_t6g: 80
+    USE_NUM_CELLS_IN_FILENAMES: True
+  task_run_fcst:
+    DT_ATMOS: 225
+    LAYOUT_X: 6
+    LAYOUT_Y: 4
+    BLOCKSIZE: 36
     write_groups: 1
     write_tasks_per_group: 4
     output_grid: "rotated_latlon"
@@ -461,7 +483,7 @@
     dlon: 0.22593381
     dlat: 0.22593381
 #
-#-----------------------------------------------------------------------
+#---------------------------------------------------------------------
 #
 # A CONUS domain of GFDLgrid type with ~3km cells.
 #
@@ -472,23 +494,25 @@
 #-----------------------------------------------------------------------
 #
 "CONUS_3km_GFDLgrid":
-  GRID_GEN_METHOD: "GFDLgrid"
-  grid_settings:
-    lon_t6_ctr: -97.5
-    lat_t6_ctr: 38.5
-    stretch_factor: 1.5
-    num_cells: 768
-    refine_ratio: 3
-    istart_of_t7_on_t6g: 70
-    iend_of_t7_on_t6g: 699
-    jstart_of_t7_on_t6g: 165
-    jend_of_t7_on_t6g: 604
-  USE_NUM_CELLS_IN_FILENAMES: True
-  DT_ATMOS: 36
-  LAYOUT_X: 30
-  LAYOUT_Y: 22
-  BLOCKSIZE: 35
-  QUILTING:
+  workflow:
+    GRID_GEN_METHOD: "GFDLgrid"
+  task_make_grid:
+    grid_settings:
+      lon_t6_ctr: -97.5
+      lat_t6_ctr: 38.5
+      stretch_factor: 1.5
+      num_cells: 768
+      refine_ratio: 3
+      istart_of_t7_on_t6g: 70
+      iend_of_t7_on_t6g: 699
+      jstart_of_t7_on_t6g: 165
+      jend_of_t7_on_t6g: 604
+    USE_NUM_CELLS_IN_FILENAMES: True
+  task_run_fcst:
+    DT_ATMOS: 36
+    LAYOUT_X: 30
+    LAYOUT_Y: 22
+    BLOCKSIZE: 35
     write_groups: 1
     write_tasks_per_group: 22
     output_grid: "rotated_latlon"
@@ -501,7 +525,7 @@
     dlon: 0.02665763
     dlat: 0.02665763
 #
-#-----------------------------------------------------------------------
+#---------------------------------------------------------------------
 #
 # 25-km HRRR grid for testing Online-CMAQ.
 #
@@ -521,20 +545,19 @@
   LAYOUT_X: 10
   LAYOUT_Y: 11
   BLOCKSIZE: 2
-  QUILTING:
-    write_groups: 1
-    write_tasks_per_group: 10
-    output_grid: "lambert_conformal"
-    cen_lon: -97.5
-    cen_lat: 38.5
-    stdlat1: 38.5
-    stdlat2: 38.5
-    nx: 191
-    ny: 97
-    lon1: -120.72962370
-    lat1: 25.11648583
-    dx: 25000.0
-    dy: 25000.0
+  write_groups: 1
+  write_tasks_per_group: 10
+  output_grid: "lambert_conformal"
+  cen_lon: -97.5
+  cen_lat: 38.5
+  stdlat1: 38.5
+  stdlat2: 38.5
+  nx: 191
+  ny: 97
+  lon1: -120.72962370
+  lat1: 25.11648583
+  dx: 25000.0
+  dy: 25000.0
 #
 #-----------------------------------------------------------------------
 #
@@ -543,21 +566,23 @@
 #-----------------------------------------------------------------------
 #
 "AQM_NA_13km":
-  GRID_GEN_METHOD: "ESGgrid"
-  grid_settings:
-    lon_ctr: -118.0
-    lat_ctr: 50.0
-    delx: 13000.0
-    dely: 13000.0
-    nx: 800
-    ny: 544
-    pazi: 0.0
-    halo_width: 6
-  DT_ATMOS: 180
-  LAYOUT_X: 50
-  LAYOUT_Y: 34
-  BLOCKSIZE: 16
-  QUILTING:
+  workflow:
+    GRID_GEN_METHOD: "ESGgrid"
+  task_make_grid:
+    grid_settings:
+      lon_ctr: -118.0
+      lat_ctr: 50.0
+      delx: 13000.0
+      dely: 13000.0
+      nx: 800
+      ny: 544
+      pazi: 0.0
+      halo_width: 6
+  task_run_fcst:
+    DT_ATMOS: 180
+    LAYOUT_X: 50
+    LAYOUT_Y: 34
+    BLOCKSIZE: 16
     write_groups: 2
     write_tasks_per_group: 46
     output_grid: "rotated_latlon"
@@ -570,28 +595,30 @@
     dlon: 0.116908139
     dlat: 0.116908139
 #
-#-----------------------------------------------------------------------
+#---------------------------------------------------------------------
 #
 # Emulation of GSD's RAP domain with ~13km cell size.
 #
 #-----------------------------------------------------------------------
 #
 "RRFS_NA_13km":
-  GRID_GEN_METHOD: "ESGgrid"
-  grid_settings:
-    lon_ctr: -112.5
-    lat_ctr: 55.0
-    delx: 13000.0
-    dely: 13000.0
-    nx: 912
-    ny: 623
-    pazi: 0.0
-    halo_width: 6
-  DT_ATMOS: 75
-  LAYOUT_X: 16
-  LAYOUT_Y: 16
-  BLOCKSIZE: 30
-  QUILTING:
+  workflow:
+    GRID_GEN_METHOD: "ESGgrid"
+  task_make_grid:
+    grid_settings:
+      lon_ctr: -112.5
+      lat_ctr: 55.0
+      delx: 13000.0
+      dely: 13000.0
+      nx: 912
+      ny: 623
+      pazi: 0.0
+      halo_width: 6
+  task_run_fcst:
+    DT_ATMOS: 75
+    LAYOUT_X: 16
+    LAYOUT_Y: 16
+    BLOCKSIZE: 30
     write_groups: 1
     write_tasks_per_group: 16
     output_grid: "rotated_latlon"
@@ -604,28 +631,30 @@
     dlon: 0.1169081
     dlat: 0.1169081
 #
-#-----------------------------------------------------------------------
+#---------------------------------------------------------------------
 #
 # Future operational RRFS domain with ~3km cell size.
 #
 #-----------------------------------------------------------------------
 #
 "RRFS_NA_3km":
-  GRID_GEN_METHOD: "ESGgrid"
-  grid_settings:
-    lon_ctr: -112.5
-    lat_ctr: 55.0
-    delx: 3000.0
-    dely: 3000.0
-    nx: 3950
-    ny: 2700
-    pazi: 0.0
-    halo_width: 6
-  DT_ATMOS: 36
-  LAYOUT_X: 20   # 40 - EMC operational configuration
-  LAYOUT_Y: 35   # 45 - EMC operational configuration
-  BLOCKSIZE: 28
-  QUILTING:
+  workflow:
+    GRID_GEN_METHOD: "ESGgrid"
+  task_make_grid:
+    grid_settings:
+      lon_ctr: -112.5
+      lat_ctr: 55.0
+      delx: 3000.0
+      dely: 3000.0
+      nx: 3950
+      ny: 2700
+      pazi: 0.0
+      halo_width: 6
+  task_run_fcst:
+    DT_ATMOS: 36
+    LAYOUT_X: 20   # 40 - EMC operational configuration
+    LAYOUT_Y: 35   # 45 - EMC operational configuration
+    BLOCKSIZE: 28
     write_groups: 1
     write_tasks_per_group: 144
     output_grid: "rotated_latlon"

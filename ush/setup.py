@@ -42,7 +42,6 @@ from python_utils import (
 )
 
 from set_cycle_dates import set_cycle_dates
-from set_predef_grid_params import set_predef_grid_params
 from set_gridparams_ESGgrid import set_gridparams_ESGgrid
 from set_gridparams_GFDLgrid import set_gridparams_GFDLgrid
 from uwtools.api.config import get_yaml_config
@@ -701,62 +700,38 @@ def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
     #
 
     fcst_config = expt_config["task_run_fcst"]
-    grid_config = expt_config["task_make_grid"]
 
-    # Warn if user has specified a large timestep inappropriately
-    hires_ccpp_suites = ["FV3_RRFS_v1beta", "FV3_WoFS_v0", "FV3_HRRR"]
-    if workflow_config["CCPP_PHYS_SUITE"] in hires_ccpp_suites:
-        dt = fcst_config.get("DT_ATMOS")
-        if dt:
-            if dt > 40:
-                logger.warning(dedent(
-                    f"""
-                    WARNING: CCPP suite {workflow_config["CCPP_PHYS_SUITE"]} requires short
-                    time step regardless of grid resolution. The user-specified value
-                    DT_ATMOS = {fcst_config.get("DT_ATMOS")}
-                    may result in CFL violations or other errors!
-                    """
-                ))
 
     # Gather the pre-defined grid parameters, if needed
-    if workflow_config.get("PREDEF_GRID_NAME"):
-        grid_params = set_predef_grid_params(
-            USHdir,
-            workflow_config["PREDEF_GRID_NAME"],
-            fcst_config["QUILTING"],
-        )
+    if (grid_name := workflow_config.get("PREDEF_GRID_NAME")):
+        grid_params = get_yaml_config(Path(USHdir,"predef_grid_params.yaml"))[grid_name]
 
         # Users like to change these variables, so don't overwrite them
         special_vars = ["DT_ATMOS", "LAYOUT_X", "LAYOUT_Y", "BLOCKSIZE"]
-        for param, value in grid_params.items():
-            if param in special_vars:
-                param_val = fcst_config.get(param)
-                if param_val and isinstance(param_val, str) and "{{" not in param_val:
-                    continue
-                elif isinstance(param_val, (int, float)):
-                    continue
-                # DT_ATMOS needs special treatment based on CCPP suite
-                elif param == "DT_ATMOS":
-                    if workflow_config["CCPP_PHYS_SUITE"] in hires_ccpp_suites and grid_params[param] > 40:
-                        logger.warning(dedent(
-                            f"""
-                            WARNING: CCPP suite {workflow_config["CCPP_PHYS_SUITE"]} requires short
-                            time step regardless of grid resolution; setting DT_ATMOS to 40.\n
-                            This value can be overwritten in the user config file.
-                            """
-                        ))
-                        fcst_config[param] = 40
-                    else:
-                        fcst_config[param] = value
-                else:
-                    fcst_config[param] = value
-            elif param.startswith("WRTCMP"):
-                if fcst_config.get(param) == "":
-                    fcst_config[param] = value
-            elif param == "GRID_GEN_METHOD":
-                workflow_config[param] = value
-            else:
-                grid_config[param] = value
+        for var in special_vars:
+            user_value = fcst_config[var]
+            if isinstance(user_value, int):
+                # Don't keep the pre-defined value
+                del grid_params["task_run_fcst"][var]
+        expt_config.update_from(grid_params)
+    else:
+        grid_gen_method = workflow_config["GRID_GEN_METHOD"]
+        expt_config["task_make_grid"]["grid_settings"] = expt_config["task_make_grid"]["user_defined_grid"][grid_gen_method]
+
+    # Warn if the time step is innapropriate for the physics suite.
+    hires_ccpp_suites = ["FV3_RRFS_v1beta", "FV3_WoFS_v0", "FV3_HRRR"]
+    if workflow_config["CCPP_PHYS_SUITE"] in hires_ccpp_suites:
+        dt = fcst_config["DT_ATMOS"]
+        if dt > 40:
+            logger.warning(dedent(
+                f"""
+                WARNING: CCPP suite {workflow_config["CCPP_PHYS_SUITE"]} requires short
+                time step regardless of grid resolution. The user-specified value
+                DT_ATMOS = {fcst_config.get("DT_ATMOS")}
+                may result in CFL violations or other errors!
+                """
+            ))
+            fcst_config["DT_ATMOS"] = 40
 
     run_envir = expt_config["user"].get("RUN_ENVIR", "")
 
@@ -842,43 +817,23 @@ def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
     # -----------------------------------------------------------------------
     #
     grid_gen_method = workflow_config["GRID_GEN_METHOD"]
+    grid_config = expt_config["task_make_grid"]
+
+    grid_settings = grid_config["grid_settings"]
     if grid_gen_method == "GFDLgrid":
-        # where does user-defined grid get defined? config is empty
-        grid_params = set_gridparams_GFDLgrid(constans=constants, **grid_config["user_defined_grid"]["gfdlgrid"])
-    
-        """
         grid_params = set_gridparams_GFDLgrid(
-            lon_of_t6_ctr=grid_config["GFDLgrid_LON_T6_CTR"],
-            lat_of_t6_ctr=grid_config["GFDLgrid_LAT_T6_CTR"],
-            res_of_t6g=grid_config["GFDLgrid_NUM_CELLS"],
-            stretch_factor=grid_config["GFDLgrid_STRETCH_FAC"],
-            refine_ratio_t6g_to_t7g=grid_config["GFDLgrid_REFINE_RATIO"],
-            istart_of_t7_on_t6g=grid_config["GFDLgrid_ISTART_OF_RGNL_DOM_ON_T6G"],
-            iend_of_t7_on_t6g=grid_config["GFDLgrid_IEND_OF_RGNL_DOM_ON_T6G"],
-            jstart_of_t7_on_t6g=grid_config["GFDLgrid_JSTART_OF_RGNL_DOM_ON_T6G"],
-            jend_of_t7_on_t6g=grid_config["GFDLgrid_JEND_OF_RGNL_DOM_ON_T6G"],
             verbose=verbose,
             nh4=expt_config["constants"]["NH4"],
             run_envir=run_envir,
+            **grid_settings,
         )
-        """
-    elif grid_gen_method == "ESGgrid":
-        grid_params = set_gridparams_ESGgrid(constans=constants, **grid_config["user_defined_grid"]["esggrid"])
-        """
-        grid_params = set_gridparams_ESGgrid(
-            lon_ctr=grid_config["ESGgrid_LON_CTR"],
-            lat_ctr=grid_config["ESGgrid_LAT_CTR"],
-            nx=grid_config["ESGgrid_NX"],
-            ny=grid_config["ESGgrid_NY"],
-            pazi=grid_config["ESGgrid_PAZI"],
-            halo_width=grid_config["ESGgrid_WIDE_HALO_WIDTH"],
-            delx=grid_config["ESGgrid_DELX"],
-            dely=grid_config["ESGgrid_DELY"],
-            constants=expt_config["constants"],
-        )
-        """
-    else:
 
+    elif grid_gen_method == "ESGgrid":
+        grid_params = set_gridparams_ESGgrid(
+            constants=expt_config["constants"],
+            **grid_settings,
+        )
+    else:
         errmsg = dedent(
             f"""
             Valid values of GRID_GEN_METHOD are GFDLgrid and ESGgrid.
@@ -1073,7 +1028,6 @@ def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
     post_config = expt_config["task_run_post"]
 
     # Make sure the post output domain is set
-    predef_grid_name = workflow_config.get("PREDEF_GRID_NAME")
     post_output_domain_name = post_config["post_output_domain_name"]
 
     if "{{ " in post_output_domain_name:
@@ -1265,7 +1219,7 @@ def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
             task_dir = expt_config[sect_key].get(dir_key)
 
             if not task_dir:
-                task_dir = os.path.join(pregen_basedir, predef_grid_name)
+                task_dir = os.path.join(pregen_basedir, grid_name)
                 expt_config[sect_key][dir_key] = task_dir
                 msg = dedent(
                     f"""
