@@ -71,7 +71,7 @@ def make_orog(config_file, key_path):
     logging.info(f"Will run make_orog in {task_rundir}")
 
     # The experiment config will have {{ CRES | env }} expressions in it that need to be
-    # dereferenced during driver initialization.
+    # dereferenced during driver initialization
     cres = expt_config["workflow"]["CRES"]
     os.environ["CRES"] = cres
 
@@ -116,7 +116,7 @@ def make_orog(config_file, key_path):
         files=glob.glob(str(task_rundir / f"{cres}*.nc")),
     )
 
-    # Mark the successful completion of the script on disk.
+    # Mark the successful completion of the script on disk
     Path(task_rundir / "make_orog_task_complete.txt").touch()
 
 

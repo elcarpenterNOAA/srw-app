@@ -1,5 +1,5 @@
 """
-The run script for SfcClimoGen
+The run script for sfc_climo_gen 
 """
 
 import glob
@@ -42,7 +42,7 @@ def link_files(dest_dir, files):
 
 
 parser = ArgumentParser(
-    description="Script that runs SfcClimoGen via uwtools API.",
+    description="Script that runs sfc_climo_gen via uwtools API.",
 )
 parser.add_argument(
     "-c",
@@ -61,8 +61,10 @@ parser.add_argument(
 )
 
 args = parser.parse_args()
-
 expt_config = get_yaml_config(args.config_file)
+
+# The experiment config will have {{ CRES | env }} expressions in it that need to be
+# dereferenced during driver initialization
 CRES = expt_config["workflow"]["CRES"]
 os.environ["CRES"] = CRES 
 expt_config.dereference(
@@ -72,10 +74,11 @@ expt_config.dereference(
     }
 )
 
-args = parser.parse_args()
 
 def make_sfc_climo(config_file, key_path):
-    # Run sfc_climo_gen 
+    """
+    Run the sfc_climo_gen driver.
+    """
     sfc_climo_gen_driver = SfcClimoGen(
         config=config_file,
         key_path=key_path,
@@ -89,13 +92,15 @@ def make_sfc_climo(config_file, key_path):
         sys.exit(1)
     
     
-    # Deliver output data
+    # Destination of important files from this process
     fix_lam_path = Path(expt_config["workflow"]["FIXlam"])
+    # Link sfc_climo_gen output data to fix directory
     link_files(
         dest_dir=fix_lam_path,
         files=glob.glob(str(rundir / f"*.nc")),
     )
     
+    # Mark the successful completion of the script on disk
     Path(rundir / "make_sfc_climo_task_complete.txt").touch()
 
 
