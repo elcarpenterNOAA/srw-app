@@ -1,11 +1,7 @@
 #!/usr/bin/env python3
 
-import copy
-import json
 import os
-import sys
 import datetime
-import traceback
 import logging
 from pathlib import Path
 from textwrap import dedent
@@ -16,22 +12,14 @@ from uwtools.api.config import get_yaml_config
 from link_fix import link_fix
 from python_utils import (
     log_info,
-    cd_vrfy,
     date_to_str,
     mkdir_vrfy,
-    rm_vrfy,
-    check_var_valid_value,
     lowercase,
     uppercase,
-    list_to_str,
     check_for_preexist_dir_file,
     flatten_dict,
-    check_structure_dict,
     update_dict,
-    import_vars,
-    get_env_var,
     load_config_file,
-    cfg_to_shell_str,
     cfg_to_yaml_str,
     load_ini_config,
     get_ini_value,
@@ -44,7 +32,6 @@ from python_utils import (
 from set_cycle_dates import set_cycle_dates
 from set_gridparams_ESGgrid import set_gridparams_ESGgrid
 from set_gridparams_GFDLgrid import set_gridparams_GFDLgrid
-from uwtools.api.config import get_yaml_config
 
 
 def load_config_for_setup(ushdir, default_config, user_config):
@@ -438,7 +425,6 @@ def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
     # -----------------------------------------------------------------------
     #
 
-    expt_subdir = workflow_config.get("EXPT_SUBDIR", "")
     exptdir = workflow_config.get("EXPTDIR")
 
     # Update some paths that include EXPTDIR and EXPT_BASEDIR
@@ -635,10 +621,8 @@ def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
             v = ics_lbcs.get(xcs)
             if not isinstance(v, dict):
                 return v
-            else:
-                return v.get(fmt, "")
-        else:
-            return ""
+            return v.get(fmt, "")
+        return ""
 
     # Get the paths to any platform-supported data streams
     get_extrn_ics = expt_config.get("task_get_extrn_ics", {})
@@ -1034,7 +1018,7 @@ def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
         except TypeError:
             raise TypeError(
                 dedent(
-                    f"""
+                    """
                 USE_CRTM has been set, but the external CRTM fix file
                 directory (CRTM_DIR) is None.
                 """
@@ -1147,14 +1131,14 @@ def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
     #
     # Get list of all top-level tasks and metatasks in the workflow.
     task_defs = rocoto_config.get("tasks")
-    all_tasks = [task for task in task_defs]
+    all_tasks = list(task_defs.keys())
 
     # Get list of all valid top-level tasks and metatasks pertaining to ensemble
     # verification.
     ens_vx_task_defns = load_config_file(
         os.path.join(USHdir, os.pardir, "parm", "wflow", "verify_ens.yaml")
     )
-    ens_vx_valid_tasks = [task for task in ens_vx_task_defns]
+    ens_vx_valid_tasks = list(ens_vx_task_defns.keys())
 
     # Get list of all valid top-level tasks and metatasks in the workflow that
     # pertain to ensemble verification.
@@ -1355,7 +1339,7 @@ def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
         logging.debug(
             f'Selected CCPP suite ({workflow_config["CCPP_PHYS_SUITE"]}) uses Thompson MP'
         )
-        logging.debug(f"Setting up links for additional fix files")
+        logging.debug("Setting up links for additional fix files")
 
         # If the model ICs or BCs are not from RAP or HRRR, they will not contain aerosol
         # climatology data needed by the Thompson scheme, so we need to provide a separate file
@@ -1447,7 +1431,7 @@ def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
             continue
         vkey = "valid_vals_" + k
         if vkey in cfg_v:
-            if type(v) == list:
+            if isinstance(v, list):
                 if not (all(ele in cfg_v[vkey] for ele in v)):
                     raise Exception(
                         dedent(
