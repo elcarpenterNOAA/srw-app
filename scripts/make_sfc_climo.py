@@ -15,7 +15,7 @@ from uwtools.api.config import get_yaml_config
 
 def link_files(dest_dir, files):
     """
-    Link a given list of files to the destination directory using the same file names.
+    Link a given list of files to the destination directory updating the file names.
     """
     for fpath in files:
         path = Path(fpath)
