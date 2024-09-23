@@ -1471,27 +1471,27 @@ task_make_sfc_climo:
         stdout: "{{ user.HOMEdir }}/scripts"
         walltime: 00:05:00
       envcmds:
-        - module use {{ user.HOMEdir }}/modulefiles
         - module load build_{{ user.MACHINE|lower() }}_{{ workflow.COMPILER }}
+        - module use {{ user.HOMEdir }}/modulefiles
       executable: "{{ user.EXECdir }}/sfc_climo_gen"
       mpicmd: '{{ platform.BATCH_RUN_CMD }}'
     namelist:
       update_values:
         config:
+          halo: !int '{{ constants.NH4 }}'
           input_facsf_file: "{{ platform.FIXsfc}}/facsf.1.0.nc"
-          input_substrate_temperature_file: "{{ platform.FIXsfc }}/substrate_temperature.2.6x1.5.nc"
           input_maximum_snow_albedo_file: "{{ platform.FIXsfc }}/maximum_snow_albedo.0.05.nc"
-          input_snowfree_albedo_file: "{{ platform.FIXsfc }}/snowfree_albedo.4comp.0.05.nc"
           input_slope_type_file: "{{ platform.FIXsfc }}/slope_type.1.0.nc"
+          input_snowfree_albedo_file: "{{ platform.FIXsfc }}/snowfree_albedo.4comp.0.05.nc"
           input_soil_type_file: "{{ platform.FIXsfc }}/soil_type.statsgo.0.05.nc"
-          input_vegetation_type_file: "{{ platform.FIXsfc }}/vegetation_type.igbp.0.05.nc"
+          input_substrate_temperature_file: "{{ platform.FIXsfc }}/substrate_temperature.2.6x1.5.nc"
           input_vegetation_greenness_file: "{{ platform.FIXsfc }}/vegetation_greenness.0.144.nc"
+          input_vegetation_type_file: "{{ platform.FIXsfc }}/vegetation_type.igbp.0.05.nc"
+          maximum_snow_albedo_method: "bilinear"
           mosaic_file_mdl: "{{ workflow.FIXlam }}/{{ 'CRES' | env }}{{ workflow.DOT_OR_USCORE }}mosaic.halo{{ constants.NH4 }}.nc"
           orog_dir_mdl: "{{ workflow.FIXlam }}"
           orog_files_mdl: 
             - "{{ 'CRES' | env }}{{ workflow.DOT_OR_USCORE }}oro_data.tile{{ constants.TILE_RGNL }}.halo{{ constants.NH4 }}.nc"
-          halo: !int '{{ constants.NH4 }}'
-          maximum_snow_albedo_method: "bilinear"
           snowfree_albedo_method: "bilinear"
           vegetation_greenness_method: "bilinear"
     rundir: '{{ workflow.EXPTDIR }}/sfc_climo'

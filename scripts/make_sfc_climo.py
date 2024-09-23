@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 The run script for sfc_climo_gen 
 """
@@ -13,7 +14,7 @@ from uwtools.api.sfc_climo_gen import SfcClimoGen
 from uwtools.api.config import get_yaml_config
 
 
-def link_files(dest_dir, files):
+def _link_files(dest_dir, files):
     """
     Link a given list of files to the destination directory updating the file names.
     """
@@ -31,10 +32,10 @@ def link_files(dest_dir, files):
                 linkname.symlink_to(path)
     
         else:
-            bn = fn.split(".nc")[0]
-            fn = f"{CRES}.{bn}.halo0.nc"
-            tile1_fn = fn.replace("tile7.halo0", "tile1")
-            for link in (fn, tile1_fn):
+            basename = path.stem
+            halo0_fn = f"{CRES}.{basename}.halo0.nc"
+            tile1_fn = halo0_fn.replace("tile7.halo0", "tile1")
+            for link in (halo0_fn, tile1_fn):
                 link = Path(link)
                 if (linkname := dest_dir / link.name).is_symlink():
                     linkname.unlink()
@@ -95,7 +96,7 @@ def make_sfc_climo(config_file, key_path):
     # Destination of important files from this process
     fix_lam_path = Path(expt_config["workflow"]["FIXlam"])
     # Link sfc_climo_gen output data to fix directory
-    link_files(
+    _link_files(
         dest_dir=fix_lam_path,
         files=glob.glob(str(rundir / f"*.nc")),
     )
