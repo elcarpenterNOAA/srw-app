@@ -4,9 +4,10 @@ Create a model_configure file for the FV3 forecast model from a
 template.
 """
 import argparse
-import os
+import datetime as dt
 import sys
-from textwrap import dedent
+from pathlib import Path
+
 from uwtools.api.template import render
 from uwtools.api.config import get_yaml_config
 
@@ -33,11 +34,11 @@ def create_model_configure_file(config_file, cycle):
     rundir = Path(fcst_config["rundir"])
 
     render(
-        input_file = expt_config["workflow"]["MODEL_CONFIG_TMPL_FP"],
-        output_file = run_dir / "model_configure"
-        values_src = config_file,
-        overrides = fcst_config,
-        )
+        input_file=expt_config["workflow"]["MODEL_CONFIG_TMPL_FP"],
+        output_file=rundir / "model_configure",
+        values_src=config_file,
+        overrides=fcst_config,
+    )
 
 
 def parse_args(argv):
