@@ -9,9 +9,10 @@ import sys
 from argparse import ArgumentParser
 from pathlib import Path
 
-from uwtools.api.fs import link as uwlink
-from uwtools.api.sfc_climo_gen import SfcClimoGen 
 from uwtools.api.config import get_yaml_config
+from uwtools.api.fs import link as uwlink
+from uwtools.api.logging import use_uwtools_logger
+from uwtools.api.sfc_climo_gen import SfcClimoGen 
 
 
 def _link_files(dest_dir, files, cres):
@@ -107,6 +108,8 @@ def make_sfc_climo(config_file, key_path):
 
 
 if __name__ == "__main__":
+
+    use_uwtools_logger()
 
     args = parse_args(sys.argv[1:])
     make_sfc_climo(

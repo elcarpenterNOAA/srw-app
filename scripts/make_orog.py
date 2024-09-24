@@ -10,13 +10,13 @@ import sys
 from argparse import ArgumentParser
 from pathlib import Path
 
+from uwtools.api.config import get_yaml_config
 from uwtools.api.driver import Driver
 from uwtools.api.filter_topo import FilterTopo
 from uwtools.api.logging import use_uwtools_logger
 from uwtools.api.orog import Orog
 from uwtools.api.orog_gsl import OrogGSL
 from uwtools.api.shave import Shave
-from uwtools.api.config import get_yaml_config
 
 
 def link_files(dest_dir, files):
