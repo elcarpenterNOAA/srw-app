@@ -29,7 +29,7 @@ task_make_grid:
 
 task_make_orog:
   <<: *default_task
-  command: !cycstr 'source &USHdir;/load_modules_wflow.sh hera ; &SCRIPTSdir;/make_orog.py
+  command: !cycstr 'source &USHdir;/load_modules_wflow.sh {{ user.MACHINE }} ; &SCRIPTSdir;/make_orog.py
     -c &GLOBAL_VAR_DEFNS_FP;
     --key-path task_make_orog'
   join: !cycstr '&LOGDIR;/{{ jobname }}_@Y@m@d@H&LOGEXT;'
@@ -50,12 +50,19 @@ task_make_orog:
         text: '{{ task_make_grid.GRID_DIR }}/make_grid_task_complete.txt'
 
 task_make_sfc_climo:
-  <<: *default_task
-  command: '&LOAD_MODULES_RUN_TASK; "make_sfc_climo" "&JOBSdir;/JREGIONAL_MAKE_SFC_CLIMO"'
-  envars:
-    <<: *default_envars
+  account: '&ACCOUNT;'
+  attrs:
+    cycledefs: at_start
+    maxtries: '2'
+  command: 'source &USHdir;/load_modules_wflow.sh {{ user.MACHINE }}; &SCRIPTSdir;/make_sfc_climo.py
+    -c &GLOBAL_VAR_DEFNS_FP; 
+    --key-path task_make_sfc_climo'
   join: !cycstr '&LOGDIR;/{{ jobname }}_@Y@m@d@H&LOGEXT;'
-  nnodes: 2
+  nodes: "{{ task_make_sfc_climo.sfc_climo_gen.execution.batchargs.nodes }}:ppn={{ task_make_sfc_climo.sfc_climo_gen.execution.batchargs.tasks_per_node }}"
+
+  partition: '{% if platform.get("PARTITION_DEFAULT") %}&PARTITION_DEFAULT;{% else %}None{% endif %}'
+  queue: '&QUEUE_DEFAULT;'
+  walltime: "{{ task_make_sfc_climo.sfc_climo_gen.execution.batchargs.walltime }}" 
   dependency:
     and:
       or_make_grid:
