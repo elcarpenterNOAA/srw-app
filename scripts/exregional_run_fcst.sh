@@ -726,13 +726,11 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+#
+ISO_CDATE=${CDATE:0:4}-${CDATE:4:2}-${CDATE:6:2}T${CDATE:8:2}
 python3 $USHdir/create_model_configure_file.py \
   --path-to-defns ${GLOBAL_VAR_DEFNS_FP} \
-  --cdate "$CDATE" \
-  --fcst_len_hrs "${FCST_LEN_HRS}" \
-  --fhrot "${FHROT}" \
-  --run-dir "${DATA}" \
-  --dt-atmos "${DT_ATMOS}"
+  --cdate "$ISO_CDATE"
 export err=$?
 if [ $err -ne 0 ]; then
   message_txt="Call to function to create a model configuration file 
