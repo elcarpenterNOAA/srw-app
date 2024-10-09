@@ -1228,19 +1228,32 @@ task_make_grid:
           executable: "{{ user.EXECdir }}/global_equiv_resol"
         input_grid_file:
         rundir:
-  make_solo_mosaic:
-    config:
-      dir:
-      num_tiles:
-      mosaic_name:
-      periodx:
-      periody:
-      tile_file:
-    execution:
-      batchargs:
-        cores: 1
-        walltime: "00:01:00"
-      executable: "{{ user.EXECdir }}/make_solo_mosaic"
+  NHW:
+    make_solo_mosaic:
+      config:
+        dir:
+        num_tiles:
+        mosaic_name:
+        periodx:
+        periody:
+        tile_file:
+      execution: &make_solo_mosaic_execution
+        batchargs:
+          cores: 1
+          walltime: "00:01:00"
+        executable: "{{ user.EXECdir }}/make_solo_mosaic"
+  NH3:
+    make_solo_mosaic:
+      execution:
+        <<: *make_solo_mosaic_execution
+  NH4:
+    make_solo_mosaic:
+      execution:
+        <<: *make_solo_mosaic_execution
+  NH0:
+    make_solo_mosaic:
+      execution:
+        <<: *make_solo_mosaic_execution
   shave03:
     shave:
       config:
@@ -1248,9 +1261,10 @@ task_make_grid:
         nhalo: !int "{{ constants.NH3 }}"
         nx: !int "{{ grid_params.NX }}"
         ny: !int "{{ grid_params.NY }}"
-      execution:
+      execution: &shave_execution
         batchargs:
-          cores:
+          nodes: 1
+          tasks_per_node: 1
           walltime: 00:05:00
         executable: "{{ user.EXECdir }}/shave"
       rundir: "{{ task_make_grid.rundir }}/shave3"
@@ -1262,10 +1276,7 @@ task_make_grid:
         nx:
         ny:
       execution:
-        batchargs:
-          cores:
-          walltime: 00:05:00
-        executable: "{{ user.EXECdir }}/shave"
+        <<: *shave_execution
       rundir: "{{ task_make_grid.rundir }}/shave4"
   #
   #-----------------------------------------------------------------------
