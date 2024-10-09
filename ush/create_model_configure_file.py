@@ -7,9 +7,19 @@ import argparse
 import datetime as dt
 import sys
 from pathlib import Path
+from textwrap import dedent
 
-from uwtools.api.template import render
+from python_utils import (
+    cfg_to_yaml_str,
+    flatten_dict,
+    import_vars,
+    lowercase,
+    print_info_msg,
+    print_input_args,
+    str_to_type,
+)
 from uwtools.api.config import get_yaml_config
+from uwtools.api.template import render
 
 
 def create_model_configure_file(config_file, cycle):
@@ -68,7 +78,9 @@ def parse_args(argv):
 if __name__ == "__main__":
 
     args = parse_args(sys.argv[1:])
-
+    cfg = get_yaml_config(args.path_to_defns)
+    cfg = flatten_dict(cfg)
+    import_vars(dictionary=cfg)
     create_model_configure_file(
         cycle=args.cycle,
         config_file=args.path_to_defns,
