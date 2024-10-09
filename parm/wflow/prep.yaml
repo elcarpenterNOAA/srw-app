@@ -24,8 +24,12 @@ default_task_prep: &default_task
 
 task_make_grid:
   <<: *default_task
-  command: '&LOAD_MODULES_RUN_TASK; "make_grid" "&JOBSdir;/JREGIONAL_MAKE_GRID"'
+  command: 'source &USHdir;/load_modules_wflow.sh {{ user.MACHINE }} ; &SCRIPTSdir;/make_grid.py
+    -c &GLOBAL_VAR_DEFNS_FP;
+    --key-path task_make_grid'
   join: !cycstr '&LOGDIR;/{{ jobname }}_@Y@m@d@H&LOGEXT;'
+  nodes: "{{ task_make_grid.grid.execution.batchargs.nodes }}:ppn={{ task_make_grid.grid.execution.batchargs.tasks_per_node }}"
+  walltime: "{{ task_make_grid.grid.execution.batchargs.walltime }}"
 
 task_make_orog:
   <<: *default_task
