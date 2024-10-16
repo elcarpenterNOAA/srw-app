@@ -5,6 +5,7 @@ The run script for making the grid files for the experiment.
 import glob
 import logging
 import os
+import re
 import sys
 from argparse import ArgumentParser
 from pathlib import Path
@@ -80,6 +81,7 @@ def make_grid(config_file, key_path):
     fix_lam_path = Path(expt_config["workflow"]["FIXlam"])
 
     # Run either make_hgrid or esg_grid
+    grid_gen_method = expt_config["workflow"]["GRID_GEN_METHOD"]
     if grid_gen_method == "GFDLgrid":
         run_driver(driver_class=MakeHgrid, config_file=config_file, key_path=key_path)
     # ELC: grid_fn="GFDLgrid.tile7.nc"
@@ -113,10 +115,11 @@ def make_grid(config_file, key_path):
             config_file=config_file,
             key_path=[*key_path, subpath],
         )
-    # Link make-solo_mosaic output to fix directory
+    # Link make_solo_mosaic output to fix directory
+    pattern = r"C.*_mosaic\.halo{}\.nc"
     link_files(
         dest_dir=fix_lam_path,
-        files=glob.glob(str(task_rundir / f"C*_mosaic.halo{subpath}.nc")),
+        files=glob.glob(str(task_rundir / pattern.format(re.escape(subpath)))),
     )
     # Mark the successful completion of the script on disk.
     Path(task_rundir / "make_grid_task_complete.txt").touch()

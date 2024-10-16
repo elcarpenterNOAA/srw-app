@@ -1229,32 +1229,49 @@ task_make_grid:
   NHW:
     make_solo_mosaic:
       config:
-        dir:
-        num_tiles:
-        mosaic_name:
-        periodx:
-        periody:
-        tile_file:
+        dir: 
+        mosaic_name: "${GRID_DIR}/${CRES}${DOT_OR_USCORE}mosaic.halo0.nc" 
+        num_tiles: 1
+        tile_file: 
       execution: &make_solo_mosaic_execution
         batchargs:
           cores: 1
           walltime: "00:01:00"
         executable: "{{ user.EXECdir }}/make_solo_mosaic"
+      rundir: "{{ task_make_grid.rundir }}/NHW"
   NH3:
     make_solo_mosaic:
+      config:
+        dir:
+        mosaic_name:
+        num_tiles: 1
+        tile_file:
       execution:
         <<: *make_solo_mosaic_execution
+      rundir: "{{ task_make_grid.rundir }}/NH3"
   NH4:
     make_solo_mosaic:
+      config:
+        dir:
+        mosaic_name:
+        num_tiles: 1
+        tile_file:
       execution:
         <<: *make_solo_mosaic_execution
+      rundir: "{{ task_make_grid.rundir }}/NH4"
   NH0:
     make_solo_mosaic:
+      config:
+        dir:
+        mosaic_name:
+        num_tiles: 1
+        tile_file:
       execution:
         <<: *make_solo_mosaic_execution
+      rundir: "{{ task_make_grid.rundir }}/NH0"
   shave03:
     shave:
-      config:
+      config: &shave_config
         input_grid_file:
         nhalo: !int "{{ constants.NH3 }}"
         nx: !int "{{ grid_params.NX }}"
@@ -1269,10 +1286,8 @@ task_make_grid:
   shave04:
     shave:
       config:
-        input_grid_file:
+        <<: *shave_config
         nhalo: !int "{{ constants.NH4 }}"
-        nx:
-        ny:
       execution:
         <<: *shave_execution
       rundir: "{{ task_make_grid.rundir }}/shave4"
