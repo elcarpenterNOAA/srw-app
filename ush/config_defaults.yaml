@@ -1181,43 +1181,42 @@ task_make_grid:
   rundir: '{{ workflow.EXPTDIR + "/grid" if rocoto.tasks.get("task_make_grid") else "" }}'
   make_hgrid:
     config:
-      do_schmidt:
-      great_circle_algorithm:
-      grid_name:
+      do_schmidt: true
+      great_circle_algorithm: true
+      grid_name: '{{ workflow.GRID_GEN_METHOD }}'
       grid_type: gnomonic_ed
       halo: 1
       iend_nest:
-        - 
+        - '{{ grid_params.IEND_OF_RGNL_DOM_WITH_WIDE_HALO_ON_T6SG }}'
       istart_nest:
-        - 
+        - '{{ grid_params.ISTART_OF_RGNL_DOM_WITH_WIDE_HALO_ON_T6SG }}'
       jend_nest:
-        - 
+        - '{{ grid_params.JEND_OF_RGNL_DOM_WITH_WIDE_HALO_ON_T6SG }}'
       jstart_nest:
-        - 
-      nest_grids:
+        - '{{ grid_params.JSTART_OF_RGNL_DOM_WITH_WIDE_HALO_ON_T6SG }}'
+      nest_grids: true
       nlon:
-        - 
+        - '{{ 2 * task_make_grid.GFDLgrid_NUM_CELLS }}'
       parent_tile:
         - 6
       refine_ratio:
-        - 
-      stretch_factor:
-      target_lat: 
-      target_lon:
+        - '{{ task_make_grid.GFDLgrid_REFINE_RATIO }}'
+      stretch_factor: '{{ grid_params.STRETCH_FAC }}'
+      target_lat: '{{ grid_params.LON_CTR }}'
+      target_lon: '{{ grid_params.LAT_CTR }}'
+    rundir: '{{ task_make_grid.GRID_DIR }}/make_hgrid'
   esg_grid:
     namelist:
-      base_file:
       update_values:
         regional_grid_nml:
-          delx:
-          dely:
-          lx:
-          ly:
-          pazi:
-          plat:
-          plon:
-      validate:
-    rundir:
+          delx: '{{ grid_params.DEL_ANGLE_X_SG}}'
+          dely: '{{ grid_params.DEL_ANGLE_Y_SG }}'
+          lx: '{{ grid_params.NEG_NX_OF_DOM_WITH_WIDE_HALO }}'
+          ly: '{{ grid_params.NEG_NY_OF_DOM_WITH_WIDE_HALO }}'
+          pazi: '{{ grid_params.PAZI }}'
+          plat: '{{ grid_params.LAT_CTR }}'
+          plon: '{{ grid_params.LON_CTR }}'
+    rundir: '{{ task_make_grid.GRID_DIR }}/esg_grid'
   global_equiv_resol:
     execution:
       batchargs:
