@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 The run script for making the grid files for the experiment.
 """
@@ -72,11 +73,6 @@ def make_grid(config_file, key_path):
     task_rundir = Path(make_grid_config["rundir"])
     logging.info(f"Will run make_grid in {task_rundir}")
 
-    # The experiment config will have {{ CRES | env }} expressions in it that need to be
-    # dereferenced during driver initialization.
-    cres = expt_config["workflow"]["CRES"]
-    os.environ["CRES"] = cres
-
     # Destination of important files from this process
     fix_lam_path = Path(expt_config["workflow"]["FIXlam"])
 
@@ -93,9 +89,22 @@ def make_grid(config_file, key_path):
     run_driver(
         driver_class=GlobalEquivResol, config_file=config_file, key_path=key_path
     )
+    #sys.exit(0)
+    global_equiv_resol_path = Path(task_rundir/"global_equiv_resol"/"runscript.global_equiv_resol.out")
+    with open(global_equiv_resol_path, 'r') as file:
+        content = file.read()
+    match = re.search(r'RES_equiv\s*=\s*(\d+)', content)
+    if match:
+        cres = f"C{match.group(1)}"
+    
+    # The experiment config will have {{ CRES | env }} expressions in it that need to be
+    # dereferenced during driver initialization.
+    expt_config["workflow"]["CRES"] = cres
+    expt_config.dump(config_file)
+    os.environ["CRES"] = cres
 
-    # Run shave for 3- and 4-cell-wide halo
-    for subpath in ["shave3", "shave4"]:
+    # Run shave for 3- and 4- and 0-cell-wide halo
+    for subpath in ["shave03", "shave04", "shave0"]:
         driver = run_driver(
             driver_class=Shave,
             config_file=config_file,
@@ -109,17 +118,18 @@ def make_grid(config_file, key_path):
     )
 
     # Run make_solo_mosaic
-    for subpath in ["NHW", "NH3", "NH4", "NH0"]:
+    for subpath in ["mosaic_halo_wide", "mosaic_halo3", "mosaic_halo4", "mosaic_halo0"]:
         driver = run_driver(
             driver_class=MakeSoloMosaic,
             config_file=config_file,
             key_path=[*key_path, subpath],
         )
     # Link make_solo_mosaic output to fix directory
-    pattern = r"C.*_mosaic\.halo{}\.nc"
+    #pattern = r"C.*_mosaic\.halo{}\.nc"
+    pattern = r"C.*_mosaic\.halo\d\.nc"
     link_files(
         dest_dir=fix_lam_path,
-        files=glob.glob(str(task_rundir / pattern.format(re.escape(subpath)))),
+        files=glob.glob(str(task_rundir / pattern)),
     )
     # Mark the successful completion of the script on disk.
     Path(task_rundir / "make_grid_task_complete.txt").touch()

@@ -1187,109 +1187,142 @@ task_make_grid:
       grid_type: gnomonic_ed
       halo: 1
       iend_nest:
-        - '{{ grid_params.IEND_OF_RGNL_DOM_WITH_WIDE_HALO_ON_T6SG }}'
+        - !int '{{ grid_params.IEND_OF_RGNL_DOM_WITH_WIDE_HALO_ON_T6SG }}'
       istart_nest:
-        - '{{ grid_params.ISTART_OF_RGNL_DOM_WITH_WIDE_HALO_ON_T6SG }}'
+        - !int '{{ grid_params.ISTART_OF_RGNL_DOM_WITH_WIDE_HALO_ON_T6SG }}'
       jend_nest:
-        - '{{ grid_params.JEND_OF_RGNL_DOM_WITH_WIDE_HALO_ON_T6SG }}'
+        - !int '{{ grid_params.JEND_OF_RGNL_DOM_WITH_WIDE_HALO_ON_T6SG }}'
       jstart_nest:
-        - '{{ grid_params.JSTART_OF_RGNL_DOM_WITH_WIDE_HALO_ON_T6SG }}'
-      nest_grids: true
+        - !int '{{ grid_params.JSTART_OF_RGNL_DOM_WITH_WIDE_HALO_ON_T6SG }}'
+      nest_grids: 0
       nlon:
-        - '{{ 2 * task_make_grid.GFDLgrid_NUM_CELLS }}'
+        - !int '{{ 2 * task_make_grid.user_defined_grid.GFDLgrid.num_cell }}'
       parent_tile:
         - 6
       refine_ratio:
-        - '{{ task_make_grid.GFDLgrid_REFINE_RATIO }}'
-      stretch_factor: '{{ grid_params.STRETCH_FAC }}'
-      target_lat: '{{ grid_params.LON_CTR }}'
-      target_lon: '{{ grid_params.LAT_CTR }}'
+        - !float '{{ task_make_grid.GFDLgrid_REFINE_RATIO }}'
+      stretch_factor: !float '{{ grid_params.STRETCH_FAC }}'
+      target_lat: !float '{{ grid_params.LON_CTR }}'
+      target_lon: !float '{{ grid_params.LAT_CTR }}'
+    execution:
+      batchargs:
+        nodes: 1
+        walltime: "00:20:00"
+      executable: "{{ user.EXECdir }}/make_hgrid"
+      envcmds:
+        - module use {{ user.HOMEdir }}/modulefiles
+        - module load build_{{ user.MACHINE|lower }}_{{ workflow.COMPILER }}
     rundir: '{{ task_make_grid.GRID_DIR }}/make_hgrid'
   esg_grid:
+    execution:
+      batchargs:
+        nodes: 1
+        walltime: "00:20:00"
+      executable: "{{ user.EXECdir }}/regional_esg_grid"
+      envcmds:
+        - module use {{ user.HOMEdir }}/modulefiles
+        - module load build_{{ user.MACHINE|lower }}_{{ workflow.COMPILER }}
     namelist:
       update_values:
         regional_grid_nml:
-          delx: '{{ grid_params.DEL_ANGLE_X_SG}}'
-          dely: '{{ grid_params.DEL_ANGLE_Y_SG }}'
-          lx: '{{ grid_params.NEG_NX_OF_DOM_WITH_WIDE_HALO }}'
-          ly: '{{ grid_params.NEG_NY_OF_DOM_WITH_WIDE_HALO }}'
-          pazi: '{{ grid_params.PAZI }}'
-          plat: '{{ grid_params.LAT_CTR }}'
-          plon: '{{ grid_params.LON_CTR }}'
+          delx: !float '{{ grid_params.DEL_ANGLE_X_SG}}'
+          dely: !float '{{ grid_params.DEL_ANGLE_Y_SG }}'
+          lx: !float '{{ grid_params.NEG_NX_OF_DOM_WITH_WIDE_HALO }}'
+          ly: !float '{{ grid_params.NEG_NY_OF_DOM_WITH_WIDE_HALO }}'
+          pazi: !float '{{ grid_params.PAZI }}'
+          plat: !float '{{ grid_params.LAT_CTR }}'
+          plon: !float '{{ grid_params.LON_CTR }}'
     rundir: '{{ task_make_grid.GRID_DIR }}/esg_grid'
   global_equiv_resol:
     execution:
       batchargs:
         cores: 1
-        walltime: "00:01:00"
-          executable: "{{ user.EXECdir }}/global_equiv_resol"
-        input_grid_file:
-        rundir:
-  NHW:
+        walltime: "00:20:00"
+      executable: "{{ user.EXECdir }}/global_equiv_resol"
+      envcmds:
+        - module use {{ user.HOMEdir }}/modulefiles
+        - module load build_{{ user.MACHINE|lower }}_{{ workflow.COMPILER }}
+    input_grid_file: '{{ task_make_grid.GRID_DIR }}/{{ "esg_grid/regional_grid.nc" if workflow.GRID_GEN_METHOD == "ESGgrid" else "make_hgrid/%s.tile%s.nc" % (workflow.GRID_GEN_METHOD, constants.TILE_RGNL) }}'
+    rundir: '{{ task_make_grid.GRID_DIR }}/global_equiv_resol'
+  mosaic_halo_wide:
     make_solo_mosaic:
-      config:
-        dir: 
-        mosaic_name: "${GRID_DIR}/${CRES}${DOT_OR_USCORE}mosaic.halo0.nc" 
+      config: &make_solo_mosaic_config
+        dir: "{{ task_make_grid.GRID_DIR }}" 
+        mosaic_name: "{{ task_make_grid.GRID_DIR }}/{{ 'CRES' | env }}_mosaic.halo6.nc" 
         num_tiles: 1
-        tile_file: 
+        tile_file: "{{ 'CRES' | env }}_grid.tile7.halo{{ grid_params.NHW }}.nc" 
       execution: &make_solo_mosaic_execution
         batchargs:
           cores: 1
           walltime: "00:01:00"
         executable: "{{ user.EXECdir }}/make_solo_mosaic"
+        envcmds:
+          - module use {{ user.HOMEdir }}/modulefiles
+          - module load build_{{ user.MACHINE|lower }}_{{ workflow.COMPILER }}
       rundir: "{{ task_make_grid.rundir }}/NHW"
-  NH3:
+  mosaic_halo3:
     make_solo_mosaic:
       config:
-        dir:
-        mosaic_name:
-        num_tiles: 1
-        tile_file:
+        <<: *make_solo_mosaic_config
+        mosaic_name: "{{ task_make_grid.GRID_DIR }}/{{ 'CRES' | env }}_mosaic.halo3.nc"
+        tile_file: "{{ 'CRES' | env }}_grid.tile7.halo3.nc"
       execution:
         <<: *make_solo_mosaic_execution
       rundir: "{{ task_make_grid.rundir }}/NH3"
-  NH4:
+  mosaic_halo4:
     make_solo_mosaic:
       config:
-        dir:
-        mosaic_name:
-        num_tiles: 1
-        tile_file:
+        <<: *make_solo_mosaic_config
+        mosaic_name: "{{ task_make_grid.GRID_DIR }}/{{ 'CRES' | env }}_mosaic.halo4.nc"
+        tile_file: "{{ 'CRES' | env }}_grid.tile7.halo4.nc"
       execution:
         <<: *make_solo_mosaic_execution
       rundir: "{{ task_make_grid.rundir }}/NH4"
-  NH0:
+  mosaic_halo0:
     make_solo_mosaic:
       config:
-        dir:
-        mosaic_name:
-        num_tiles: 1
-        tile_file:
+        <<: *make_solo_mosaic_config
+        mosaic_name: "{{ task_make_grid.GRID_DIR }}/{{ 'CRES' | env }}_mosaic.halo0.nc"
+        tile_file: "{{ 'CRES' | env }}_grid.tile7.halo0.nc"
       execution:
         <<: *make_solo_mosaic_execution
       rundir: "{{ task_make_grid.rundir }}/NH0"
   shave03:
     shave:
-      config: &shave_config
-        input_grid_file:
+      config: &shave_grid_config
+        input_grid_file: "{{ task_make_grid.esg_grid.rundir }}/regional_grid.nc"
         nhalo: !int "{{ constants.NH3 }}"
         nx: !int "{{ grid_params.NX }}"
         ny: !int "{{ grid_params.NY }}"
-      execution: &shave_execution
+        output_grid_file: "{{task_make_grid.shave03.rundir }}/{{ 'CRES' | env }}_grid.tile{{ constants.TILE_RGNL }}.halo{{ constants.NH3 }}.nc"
+      execution: &shave_grid_execution
         batchargs:
           nodes: 1
           tasks_per_node: 1
           walltime: 00:05:00
         executable: "{{ user.EXECdir }}/shave"
+        envcmds:
+        - module use {{ user.HOMEdir }}/modulefiles
+        - module load build_{{ user.MACHINE|lower }}_{{ workflow.COMPILER }}
       rundir: "{{ task_make_grid.rundir }}/shave3"
   shave04:
     shave:
       config:
-        <<: *shave_config
+        <<: *shave_grid_config
         nhalo: !int "{{ constants.NH4 }}"
+        output_grid_file: "{{task_make_grid.shave04.rundir }}/{{ 'CRES' | env }}_grid.tile{{ constants.TILE_RGNL }}.halo{{ constants.NH4 }}.nc"
       execution:
-        <<: *shave_execution
+        <<: *shave_grid_execution
       rundir: "{{ task_make_grid.rundir }}/shave4"
+  shave0:
+    shave:
+      config:
+        <<: *shave_grid_config
+        nhalo: !int "{{ constants.NH0 }}"
+        output_grid_file: "{{task_make_grid.shave0.rundir }}/{{ 'CRES' | env }}_grid.tile{{ constants.TILE_RGNL }}.halo{{ constants.NH0 }}.nc"
+      execution:
+        <<: *shave_grid_execution
+      rundir: "{{ task_make_grid.rundir }}/shave0"
   #
   #-----------------------------------------------------------------------
   #
